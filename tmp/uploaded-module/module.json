@@ -1,0 +1,59 @@
+{
+    "name": "demo2",
+    "version": "0.0.1",
+    "type": "module",
+    "title": "ad",
+    "description": "",
+    "license": "",
+    "authors": [
+        {
+            "name": "Iurii Krevnyi",
+            "email": "yuriikrevnyi@gmail.com",
+            "homepage": ""
+        }
+    ],
+    
+    "files--help": {
+        "files": "Це такі файли, які будуть за межами модуля. Наприклад, контроллер/модель адмінки",
+        "files-absolute": "Це шлях до файла. Вставляти таким чином, щоб <шлях від корня до списка модулів> + <export-absolute> = файл",
+        "files-relative": "Шлях який використовується для структури файлів в архіві."
+    },
+
+    "files": [
+    {
+        "absolute": "..\/..\/..\/admin\/controller\/blocks\/demo2.php",
+        "relative": "admin\/controller\/blocks\/controller.php"
+    },
+    {
+        "absolute": "..\/..\/..\/admin\/language\/english\/blocks\/demo2.php",
+        "relative": "admin\/language\/english\/blocks\/language.php"
+    },
+    {
+        "absolute": "..\/..\/..\/admin\/model\/blocks\/demo2.php",
+        "relative": "admin\/model\/blocks\/model.php"
+    },
+    {
+        "absolute": "..\/..\/..\/admin\/view\/template\/blocks\/demo2\/create.tpl",
+        "relative": "admin\/view\/template\/blocks\/create.tpl"
+    },
+    {
+        "absolute": "..\/..\/..\/admin\/view\/template\/blocks\/demo2\/edit.tpl",
+        "relative": "admin\/view\/template\/blocks\/edit.tpl"
+    },
+    {
+        "absolute": "..\/..\/..\/admin\/view\/template\/blocks\/demo2\/index.tpl",
+        "relative": "admin\/view\/template\/blocks\/index.tpl"
+    }
+],
+
+    "composer": {
+        "require": {
+
+        },
+        "autoload": {
+            "psr-4": {
+                "Blocks\\Modules\\demo2\\": "system/Blocks/Modules/demo2/src"
+            }
+        }
+    }
+}
