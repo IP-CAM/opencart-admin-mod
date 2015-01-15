@@ -1,6 +1,7 @@
 <?php 
 
 use Blocks\Repositories\ModuleRepository;
+use Blocks\Models\Module;
 
 class ModuleRespotisotyTest extends TestCase
 {
@@ -19,13 +20,14 @@ class ModuleRespotisotyTest extends TestCase
 	/**
 	 * @test
 	 */
-	public function it_should_move_module_to_temporary_directory()
+	public function it_should_move_module_to_temporary_directory_and_read_module_json()
 	{
-		$demoModuleFile = base_path() . '/app/tests/testing-module.zip';
+		$demoModuleFile = base_path() . '/app/tests/demo2.zip';
 		$updaloadedModulePath = base_path() . '/tmp/uploaded-module';
 
-		$this->_moduleRepository->handleUploadedModule($demoModuleFile);
+		$json = $this->_moduleRepository->handleUploadedZip($demoModuleFile);
 
+		$this->assertEquals('demo2', $json->name);
 		$this->assertFileExists($updaloadedModulePath);
 	}
 
@@ -38,33 +40,7 @@ class ModuleRespotisotyTest extends TestCase
 	{
 		$demoModuleFile = uniqid() . 'not-existing-url';
 
-		$this->_moduleRepository->handleUploadedModule($demoModuleFile);
-	}
-
-	/**
-	 * @test
-	 */
-	public function it_should_return_uploaded_module_json_information()
-	{
-		$updaloadedModulePath = base_path() . '/tmp/uploaded-module/module.json';
-
-		$result = $this->_moduleRepository->readUploadedModule($updaloadedModulePath);
-
-		$this->assertEquals('demo2', $result->name);
-	}
-
-	/**
-	 * @expectedException exception
-	 * @test
-	 */
-	public function it_should_throw_exception_if_uploaded_module_json_not_exists()
-	{
-		$updaloadedModulePath = base_path() . '/tmp/uploaded-module/module.json';
-
-		// Remove module.json
-		File::delete($updaloadedModulePath);
-
-		$this->_moduleRepository->readUploadedModule($updaloadedModulePath);
+		$this->_moduleRepository->handleUploadedZip($demoModuleFile);
 	}
 
 	/**
@@ -72,15 +48,29 @@ class ModuleRespotisotyTest extends TestCase
 	 */
 	public function it_should_update_module_zip_file_and_module_info_in_database()
 	{
-		$moduleListPath = app_path() . '/tests/testing-modules';
-		$demoModuleFile = base_path() . '/app/tests/testing-module.zip';
+		// Arrange
+		$moduleListPath = base_path() . '/public/modules';
+		$demoModuleFile = base_path() . '/app/tests/demo2.zip';
 
-		$this->_moduleRepository->handleUploadedModule($demoModuleFile);
-		$json = $this->_moduleRepository->readUploadedModule();
+		$demoModule = new Module([
+			'id' => '1',
+			'code' => 'demo_code',
+			'version' => '0.0.1',
+			'price' => '100',
+			'downloads' => '50'
+		]);
+		$this->_module->shouldReceive('pluck')->andReturn(1);
+		$this->_module->shouldReceive('find', 'where', 'setAttribute')->andReturn($this->_module);
+		$this->_module->shouldReceive('first')->andReturn($demoModule);
+		$this->_module->shouldReceive('save')->andReturn(true);
 
-		$this->storeModule($demoModuleFile, $json);
+		// Act
+		$json = $this->_moduleRepository->handleUploadedZip($demoModuleFile);
 
-		$this->assertFileExists($moduleListPath . '/testing-module.zip');
+		$this->_moduleRepository->store($demoModuleFile, $json);
+
+		// Assert
+		$this->assertFileExists($moduleListPath . '/demo2.zip');
 	}
 
 	

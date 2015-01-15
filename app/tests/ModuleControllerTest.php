@@ -18,13 +18,16 @@ class ModuleControllerTest extends TestCase
 	/**
 	 * @test
 	 */
-	public function it_store_module_post_info()
+	public function it_store_module_from_post_request()
 	{
-		// $file = file_get_contents('test-module.zip');
+		$zip = new \Symfony\Component\HttpFoundation\File\UploadedFile(
+			app_path() . '/tests/demo2.zip',
+			'demo2.zip'
+		);
 
-		// $this->call('post', 'module/publish', [], $file);
+		$this->call('post', 'module/publish', [], ['module' => $zip]);
 
-		// $this->assertResponseStatus(200);
+		$this->assertResponseStatus(200);
 	}
 	
 }

@@ -28,15 +28,10 @@ class ModuleController extends BaseController
 	 */
 	public function publish()
 	{
-		$module = Input::file('demo_file')->getRealPath();
+		$zip = Input::file('module')->getRealPath();
 
-		$this->moduleRepository->handleUploadedModule($module);
-		$moduleJson = $this->moduleRepository->readUploadedModule();
-
-		$this->storeModule($module, $moduleJson);
-
-		die();
-
+		$json = $this->moduleRepository->handleUploadedZip($zip);
+		$this->moduleRepository->store($zip, $json);
 	}
 
 

@@ -9,14 +9,25 @@ use Exception;
 class ModuleRepository
 {
 
+	protected $tmpModulePath;
+
 	protected $listPath;
 	protected $module;
 	
 	function __construct(Module $module)
 	{
-		$this->listPath = base_path() . '/public/modules/';
+		$this->listPath = base_path() . '/public/modules';
+		$this->tmpModulePath = base_path() . '/tmp/uploaded-module';
 
 		$this->module = $module;
+
+		$this->createModuleDirectories();
+	}
+
+	protected function createModuleDirectories()
+	{
+		@mkdir($this->listPath, 0777);
+		@mkdir($this->tmpModulePath, 0777);
 	}
 
 	public function all()
@@ -24,23 +35,48 @@ class ModuleRepository
 		return $this->module->all();
 	}
 
+	public function update($json)
+	{
+		$module_id = $this->module->where('code', $json->name)->pluck('id');
+
+		$module = Module::find($module_id);
+		$module->version = $json->version;
+		$module->price = 0;
+		
+		return $module->save();
+	}
+
+	public function create($json)
+	{
+		$module = $this->module;
+		$module->code = $json->name;
+		$module->version = $json->version;
+		$module->price = 0;
+		$module->downloads = 0;
+		
+		return $module->save();
+	}
 
 	/**
 	 * Unzip module to temporary folder in order to read module.json
 	 *
 	 * @return bool
 	 */
-	public function handleUploadedModule($module)
+	public function handleUploadedZip($uploadedZip)
 	{
+		@chmod($zip, 0777);
+		@chmod($this->tmpModulePath, 0777);
+		@mkdir($this->tmpModulePath, 0777, true);
+
 		$zip = new ZipArchive;
-		$res = $zip->open($module);
+		$res = $zip->open($uploadedZip);
 
 		if ($res === TRUE)
 		{
-		    $zip->extractTo(base_path() . '/tmp/uploaded-module');
+		    $zip->extractTo($this->tmpModulePath);
 		    $zip->close();
 
-		    return true;
+		    return $this->readUploadedModuleJson();
 		}
 
 		throw new Exception("Can't open uploaded module!");
@@ -52,9 +88,9 @@ class ModuleRepository
 	 *
 	 * @return String
 	 */
-	public function readUploadedModule()
+	protected function readUploadedModuleJson()
 	{
-		$moduleJson = File::get(base_path() . '/tmp/uploaded-module/module.json');
+		$moduleJson = File::get($this->tmpModulePath . '/module.json');
 
 		if ( ! $moduleJson)
 		{
@@ -69,9 +105,9 @@ class ModuleRepository
 	 *
 	 * @return void
 	 */
-	public function storeModule($zip, $json)
+	public function store($zip, $json)
 	{
-		if ( ! $this->copyModuleZip($zip))
+		if ( ! $this->copyModuleZip($zip, $json->name))
 		{
 			throw new Exception("Can't copy module zip file");
 		}
@@ -88,7 +124,7 @@ class ModuleRepository
 	{
 		$module = $this->module->where('code', $json->name)->first();
 
-		if ($module->id)
+		if (empty($module->id))
 		{
 			return $this->create($json);
 		}
@@ -101,9 +137,13 @@ class ModuleRepository
 	 *
 	 * @return bool
 	 */
-	protected function copyModuleZip($zip)
+	protected function copyModuleZip($zip, $name)
 	{
-		return File::copy($zip, $this->listPath);
+		$realModulePath = $this->listPath . "/{$name}.zip";
+
+		File::delete($realModulePath);
+
+		return File::copy($zip, $realModulePath);
 	}
 
 
