@@ -64,10 +64,6 @@ class ModuleRepository
 	 */
 	public function handleUploadedZip($uploadedZip)
 	{
-		@chmod($zip, 0777);
-		@chmod($this->tmpModulePath, 0777);
-		@mkdir($this->tmpModulePath, 0777, true);
-
 		$zip = new ZipArchive;
 		$res = $zip->open($uploadedZip);
 
