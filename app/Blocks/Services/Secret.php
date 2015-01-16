@@ -7,7 +7,7 @@ class Secret
 	
 	public function check($secret)
 	{
-		if ($secret === Config::get('app.publish_secret'))
+		if ($secret == Config::get('app.publish_secret'))
 		{
 			return true;
 		}
