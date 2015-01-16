@@ -79,6 +79,8 @@ return array(
 	*/
 
 	'key' => 'h96PsKNRE2G37nzn2YQI2ifCR3Q8BGwO',
+	
+	'publish_secret' => '$2y$10$Pgfs10ZAAxP9pRkT2UrGxuRWH.PZSBIUZ5dexKT1T7NOdEO3XMqci',
 
 	'cipher' => MCRYPT_RIJNDAEL_128,
 
