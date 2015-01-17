@@ -13,30 +13,48 @@ module.exports = function(grunt) {
             }
         },
 
+        phpspec: {
+            app: {
+                specs: 'app/spec/'
+            },
+            options: {
+                prefix: 'bin/'
+            }
+        },
+
         watch: {
             // setup: {
             //     files: ['app/database/**/*.php'],
             //     tasks: ['setupdatabase']
             // },
-            scripts: {
+            // scripts: {
+            //     files: [
+            //         'app/tests/**/*.php',
+            //         'app/Blocks/**/*.php'
+            //     ],
+            //     tasks: ['phpunit']
+            // },
+            phpspec: {
                 files: [
-                    'app/tests/**/*.php',
+                    'app/spec/**/*.php',
                     'app/Blocks/**/*.php'
                 ],
-                tasks: ['phpunit']
-            },
-        }
+                tasks: ['exec:phpspec']
+            }
+        },
 
-		// exec: {
-  //           testing: 'php artisan migrate:refresh --seed --database="setup" --env="testing" --force'
-		// 	// production: 'php artisan migrate --seed --force'
-		// }
+        exec: {
+            phpspec: "clear && vendor/bin/phpspec run -n --ansi"
+            // testing: 'php artisan migrate:refresh --seed --database="setup" --env="testing" --force'
+            // production: 'php artisan migrate --seed --force'
+        }
 
     });
 
     grunt.loadNpmTasks('grunt-phpunit');
     grunt.loadNpmTasks('grunt-contrib-watch');
-    // grunt.loadNpmTasks('grunt-exec');
+    grunt.loadNpmTasks('grunt-phpspec');
+    grunt.loadNpmTasks('grunt-exec');
 
     // grunt.registerTask('setupdatabase', ['exec']);
 };

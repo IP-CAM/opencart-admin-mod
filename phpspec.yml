@@ -1,0 +1,6 @@
+suites:
+  blocks_suite:
+    namespace: Blocks
+    src_path: app
+    spec_path: app
+    spec_prefix: spec

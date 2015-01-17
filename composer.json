@@ -9,7 +9,8 @@
 		"way/generators": "~2.0",
 		"phpunit/phpunit": "~4.4",
 		"mockery/mockery": "0.9.*",
-		"fzaninotto/faker": "v1.3.0"
+		"fzaninotto/faker": "v1.3.0",
+		"phpspec/phpspec": "~2.1"
 	},
 	"autoload": {
 		"classmap": [
