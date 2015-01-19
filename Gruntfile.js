@@ -27,20 +27,20 @@ module.exports = function(grunt) {
             //     files: ['app/database/**/*.php'],
             //     tasks: ['setupdatabase']
             // },
-            // scripts: {
-            //     files: [
-            //         'app/tests/**/*.php',
-            //         'app/Blocks/**/*.php'
-            //     ],
-            //     tasks: ['phpunit']
-            // },
-            phpspec: {
+            scripts: {
                 files: [
-                    'app/spec/**/*.php',
+                    'app/tests/**/*.php',
                     'app/Blocks/**/*.php'
                 ],
-                tasks: ['exec:phpspec']
-            }
+                tasks: ['phpunit']
+            },
+            // phpspec: {
+            //     files: [
+            //         'app/spec/**/*.php',
+            //         'app/Blocks/**/*.php'
+            //     ],
+            //     tasks: ['exec:phpspec']
+            // }
         },
 
         exec: {

@@ -1,59 +1,32 @@
 <?php namespace Blocks\Services;
 
-use ZipArchive;
-use Blocks\Services\Exceptions\BrokenZipException;
-use Blocks\Services\Exceptions\FileNotFoundException;
-use Illuminate\Filesystem\Filesystem;
+use Blocks\Helpers\ModuleZip;
+use Blocks\Helpers\ModuleJson;
 
 class ModuleManager
 {
 
-	protected $basePath;
-	protected $unziper;
-	protected $filesystem;
+	protected $moduleZip;
+	protected $moduleJson;
 
-	public function __construct($basePath, Unziper $unziper, Filesystem $filesystem)
+	public function __construct(ModuleZip $moduleZip, ModuleJson $moduleJson)
 	{
-		$this->basePath = $basePath;
-		$this->unziper = $unziper;
-		$this->filesystem = $filesystem;
+		$this->moduleZip = $moduleZip;
+		$this->moduleJson = $moduleJson;
 	}
 
-	public function handle($zip)
-	{
-		if ($this->unziper->unzip($zip, $this->getTempModulePath()))
-		{
-			return true;
-		}
+    public function store($zip)
+    {
+    	// unzip to tmp/uploaded-module
+    	$this->moduleZip->unzip($zip);
 
-		return false;
-	}
+    	// read module.json and get module name
+    	$moduleInfo = $this->moduleJson->describe('uploaded-module');
 
-	protected function getTempModulePath()
-	{
-		return $this->basePath . '/tmp/uploaded-module';
-	}
+    	// copy uploaded module to public/modules/{module_name}
+    	$this->moduleZip->copy($zip, $moduleInfo->getName());
 
-	protected function getListPath()
-	{
-		return $this->basePath . '/public/modules';
-	}
-
-	public function describeUploaded()
-	{
-		$path = $this->getTempModulePath() . '/module.json';
-		$json = $this->filesystem->get($path);
-		
-		return json_decode($json);
-	}
-
-	public function copy($zip, $name)
-	{
-		$realModulePath = $this->getListPath() . "/{$name}.zip";
-
-		$this->filesystem->delete($realModulePath);
-
-		return $this->filesystem->copy($zip, $realModulePath);
-	}
+        return true;
+    }
 
 }
