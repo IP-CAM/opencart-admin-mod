@@ -21,7 +21,7 @@ class ModuleRepositoryTest extends TestCase
 	public function it_stores_module_info_in_database()
 	{
 		$moduleInfo = App::make('Blocks\Helpers\ModuleJson');
-		$moduleInfo = $moduleInfo->describe('testing-module');
+		$moduleInfo = $moduleInfo->describe('test-module');
 
 		// First we will create new module
 		$moduleInfo->override('version', '1.0.0');
@@ -38,7 +38,7 @@ class ModuleRepositoryTest extends TestCase
 	{
 		// Arrange
 		$moduleInfo = App::make('Blocks\Helpers\ModuleJson');
-		$moduleInfo = $moduleInfo->describe('testing-module');
+		$moduleInfo = $moduleInfo->describe('test-module');
 		
 		// Act
 		$moduleInfo->override('version', '1.0.0');
@@ -66,7 +66,7 @@ class ModuleRepositoryTest extends TestCase
 	{
 		// Arrange
 		$moduleInfo = App::make('Blocks\Helpers\ModuleJson');
-		$moduleInfo = $moduleInfo->describe('testing-module');
+		$moduleInfo = $moduleInfo->describe('test-module');
 		$moduleInfo->override('name', 'hello');
 		$this->repository->save($moduleInfo);
 

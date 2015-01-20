@@ -13,14 +13,16 @@ class ModuleZip
         $this->filesystem = $filesystem;
     }
 
-	public function unzip($zipPath)
+	public function unzip($zipPath, $targetPath = 'tmp/uploaded-module')
 	{
+		$targetPath = $targetPath ?: base_path($targetPath);
+
 		$zip = new ZipArchive;
 		$res = $zip->open($zipPath);
 
 		if ($res === TRUE)
 		{
-		    $zip->extractTo(base_path('tmp/uploaded-module'));
+		    $zip->extractTo($targetPath);
 		    $zip->close();
 		}
 	}

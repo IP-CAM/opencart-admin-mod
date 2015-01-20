@@ -5,13 +5,14 @@ namespace spec\Blocks\Helpers;
 use PhpSpec\ObjectBehavior;
 use Prophecy\Argument;
 use Illuminate\Filesystem\Filesystem;
+use Blocks\Helpers\ModuleZip;
 
 class ModuleJsonSpec extends ObjectBehavior
 {
 
-	function let(Filesystem $filesystem)
+	function let(Filesystem $filesystem, ModuleZip $moduleZip)
 	{
-		$this->beConstructedWith($filesystem);
+		$this->beConstructedWith($filesystem, $moduleZip);
 	}
 
     function it_is_initializable()
@@ -31,6 +32,7 @@ class ModuleJsonSpec extends ObjectBehavior
 		]);
 
     	$filesystem->get($modulePath)->shouldBeCalled()->willReturn($json);
+        $filesystem->deleteDirectory(base_path("public/modules/{$module}"))->shouldBeCalled();
 
     	$this->describe($module)->shouldBeAnInstanceOf('Blocks\Helpers\ModuleJson');
     }
@@ -47,6 +49,7 @@ class ModuleJsonSpec extends ObjectBehavior
 		]);
 
     	$filesystem->get($modulePath)->shouldBeCalled()->willReturn($json);
+        $filesystem->deleteDirectory(base_path("public/modules/{$module}"))->shouldBeCalled();
 
     	$moduleInfo = $this->describe($module);
     	$moduleInfo->getName()->shouldBe('demo-name');
@@ -55,7 +58,7 @@ class ModuleJsonSpec extends ObjectBehavior
     	$moduleInfo->getDescription()->shouldBe('demo-description');
     }
 
-    function it_can_read_regular_module_json_file(Filesystem $filesystem)
+    function it_can_read_regular_module_json_file(Filesystem $filesystem, ModuleZip $moduleZip)
     {
         $module = 'demo-module';
         $modulePath = 'public/modules/demo-module/module.json';
@@ -67,6 +70,11 @@ class ModuleJsonSpec extends ObjectBehavior
         ]);
 
         $filesystem->get($modulePath)->shouldBeCalled()->willReturn($json);
+        $filesystem->deleteDirectory(base_path("public/modules/{$module}"))->shouldBeCalled();
+        $moduleZip->unzip(
+            base_path("public/modules/{$module}.zip"), 
+            base_path("public/modules/{$module}")
+        )->shouldBeCalled();
 
         $this->describe($module)->shouldBeAnInstanceOf('Blocks\Helpers\ModuleJson');
     }
@@ -83,6 +91,7 @@ class ModuleJsonSpec extends ObjectBehavior
         ]);
 
         $filesystem->get($modulePath)->shouldBeCalled()->willReturn($json);
+        $filesystem->deleteDirectory(base_path("public/modules/{$module}"))->shouldBeCalled();
 
         $moduleInfo = $this->describe($module);
         $moduleInfo->getName()->shouldBe('demo-name');
@@ -103,6 +112,7 @@ class ModuleJsonSpec extends ObjectBehavior
         ]);
 
         $filesystem->get($modulePath)->shouldBeCalled()->willReturn($json);
+        $filesystem->deleteDirectory(base_path("public/modules/{$module}"))->shouldBeCalled();
         
         $moduleInfo = $this->describe($module);
         $moduleInfo->override('version', '1.0.0');
