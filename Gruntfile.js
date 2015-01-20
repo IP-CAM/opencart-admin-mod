@@ -23,10 +23,10 @@ module.exports = function(grunt) {
         },
 
         watch: {
-            // setup: {
-            //     files: ['app/database/**/*.php'],
-            //     tasks: ['setupdatabase']
-            // },
+            setup: {
+                files: ['app/database/**/*.php'],
+                tasks: ['exec:update_database']
+            },
             scripts: {
                 files: [
                     'app/tests/**/*.php',
@@ -44,8 +44,8 @@ module.exports = function(grunt) {
         },
 
         exec: {
-            phpspec: "clear && vendor/bin/phpspec run -n --ansi"
-            // testing: 'php artisan migrate:refresh --seed --database="setup" --env="testing" --force'
+            phpspec: "clear && vendor/bin/phpspec run -n --ansi",
+            update_database: 'php artisan migrate:refresh --seed --database="setup" --env="testing" --force'
             // production: 'php artisan migrate --seed --force'
         }
 

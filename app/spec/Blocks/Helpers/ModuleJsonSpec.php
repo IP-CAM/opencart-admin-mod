@@ -91,4 +91,23 @@ class ModuleJsonSpec extends ObjectBehavior
         $moduleInfo->getDescription()->shouldBe('demo-description');
     }
 
+    function it_updates_module_param_by_its_param_code(Filesystem $filesystem)
+    {
+        $module = 'demo-module';
+        $modulePath = 'public/modules/demo-module/module.json';
+        $json = json_encode([
+            'name' => 'demo-name',
+            'version' => 'demo-version',
+            'title' => 'demo-title',
+            'description' => 'demo-description',
+        ]);
+
+        $filesystem->get($modulePath)->shouldBeCalled()->willReturn($json);
+        
+        $moduleInfo = $this->describe($module);
+        $moduleInfo->override('version', '1.0.0');
+        
+        $moduleInfo->shouldThrow('InvalidArgumentException')->during('override', ['', '']);
+    }
+
 }

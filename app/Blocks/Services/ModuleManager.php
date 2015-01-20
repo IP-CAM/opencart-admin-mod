@@ -2,17 +2,20 @@
 
 use Blocks\Helpers\ModuleZip;
 use Blocks\Helpers\ModuleJson;
+use Blocks\Repositories\ModuleRepository;
 
 class ModuleManager
 {
 
 	protected $moduleZip;
-	protected $moduleJson;
+    protected $moduleJson;
+	protected $moduleRepository;
 
-	public function __construct(ModuleZip $moduleZip, ModuleJson $moduleJson)
+	public function __construct(ModuleZip $moduleZip, ModuleJson $moduleJson, ModuleRepository $moduleRepository)
 	{
 		$this->moduleZip = $moduleZip;
-		$this->moduleJson = $moduleJson;
+        $this->moduleJson = $moduleJson;
+		$this->moduleRepository = $moduleRepository;
 	}
 
     public function store($zip)
@@ -25,6 +28,9 @@ class ModuleManager
 
     	// copy uploaded module to public/modules/{module_name}
     	$this->moduleZip->copy($zip, $moduleInfo->getName());
+
+        // update module info in db
+        $this->moduleRepository->save($moduleInfo);
 
         return true;
     }

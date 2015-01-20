@@ -36,6 +36,21 @@ class ModuleJson
     	return $this;
     }
 
+    /**
+     * Override module info params (ex. module version)
+     *
+     * @return void
+     */
+    public function override($paramCode, $value)
+    {
+        if (empty($paramCode))
+        {
+            throw new \InvalidArgumentException("\$paramCode can't be empty");
+        }
+        
+        $this->moduleInfo->{$paramCode} = $value;
+    }
+
     public function getName()
     {
         return $this->grab('name');
@@ -55,5 +70,5 @@ class ModuleJson
     {
         return $this->grab('description');
     }
-    
+
 }

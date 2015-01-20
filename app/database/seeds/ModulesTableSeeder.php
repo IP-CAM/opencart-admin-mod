@@ -18,6 +18,7 @@ class ModulesTableSeeder extends Seeder {
 				'version' => '0.0.1',
 				'price' => $faker->numberBetween(10, 100),
 				'downloads' => $faker->numberBetween(1, 50),
+				'status' => '1',
 				'created_at' => $today,
 				'updated_at' => $today,
 			]);

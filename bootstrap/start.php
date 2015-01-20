@@ -26,7 +26,8 @@ $app = new Illuminate\Foundation\Application;
 
 $env = $app->detectEnvironment(array(
 
-	'local' => array('homestead'),
+	'dev' => array('Yuriis-iMac.Dlink'),
+	// 'Yuriis-iMac.Dlink' => array('homestead'),
 
 ));
 

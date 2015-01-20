@@ -16,9 +16,10 @@ class CreateModuleTable extends Migration {
 		{
 			$table->increments('id');
 			$table->text('code');
-			$table->text('version');
-			$table->integer('price');
-			$table->integer('downloads');
+			$table->text('version', '0.0.1');
+			$table->integer('price')->default(0);
+			$table->integer('downloads')->default(0);
+			$table->integer('status')->default(0);
 			$table->timestamps();
 		});
 	}

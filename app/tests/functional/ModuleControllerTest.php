@@ -5,9 +5,13 @@ use Symfony\Component\HttpFoundation\File\UploadedFile;
 class ModuleControllerTest extends TestCase
 {
 
+	protected $moduleRepository;
+
 	public function setUp()
 	{
 		parent::setUp();
+
+		$this->moduleRepository = App::make('Blocks\Repositories\ModuleRepository');
 
 		File::deleteDirectory(base_path('tmp/uploaded-module'));
 	}
@@ -52,6 +56,8 @@ class ModuleControllerTest extends TestCase
 		// Then
 		$this->assertFileExists(base_path('tmp/uploaded-module'));
 		$this->assertFileExists(base_path('public/modules/test-module.zip'));
+
+		$this->assertNotNull($this->moduleRepository->find('test-module'));
 
 		$this->assertResponseStatus(200);
 	}

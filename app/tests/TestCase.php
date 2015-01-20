@@ -45,7 +45,7 @@ class TestCase extends Illuminate\Foundation\Testing\TestCase {
   {
     parent::setUp();
  
-    // $this->prepareForTests();
+    $this->prepareForTests();
   }
 
 
@@ -59,7 +59,7 @@ class TestCase extends Illuminate\Foundation\Testing\TestCase {
 		// Artisan::call('db:seed');
 
 		exec('rm ' . __DIR__ . '/../database/testing/testdb.sqlite');
-    	exec('cp ' . __DIR__ . '/../database/testing/stubdb.sqlite ' . __DIR__ .     '/../database/testing/testdb.sqlite');
+		exec('cp ' . __DIR__ . '/../database/testing/stubdb.sqlite ' . __DIR__ .     '/../database/testing/testdb.sqlite');
 
 		Mail::pretend(true);
 	}
