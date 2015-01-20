@@ -9,7 +9,7 @@ class SecretSpec extends ObjectBehavior
 
 	function let(Config $config)
 	{
-		$this->beConstructerWith($config);
+		$this->beConstructedWith($config);
 	}
 
     function it_is_initializable()
@@ -21,10 +21,10 @@ class SecretSpec extends ObjectBehavior
     {
     	$secret = 'some-secret-key';
     	
-    	$config->get('publish_secret')->shouldBecalled()->willReturn($secret);
+    	$config->get('app.publish_secret')->shouldBecalled()->willReturn($secret);
     	$this->check($secret)->shouldReturn(true);
 
-    	$config->get('publish_secret')->willReturn('wrong-secret-key');
+    	$config->get('app.publish_secret')->willReturn('wrong-secret-key');
     	$this->check($secret)->shouldReturn(false);
     }
 
