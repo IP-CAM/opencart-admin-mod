@@ -1,8 +1,8 @@
 {
-    "name": "demo2",
+    "name": "test-module",
     "version": "0.0.1",
     "type": "module",
-    "title": "ad",
+    "title": "Just a test module",
     "description": "",
     "license": "",
     "authors": [
@@ -21,27 +21,27 @@
 
     "files": [
     {
-        "absolute": "..\/..\/..\/admin\/controller\/blocks\/demo2.php",
+        "absolute": "..\/..\/..\/admin\/controller\/blocks\/test-module.php",
         "relative": "admin\/controller\/blocks\/controller.php"
     },
     {
-        "absolute": "..\/..\/..\/admin\/language\/english\/blocks\/demo2.php",
+        "absolute": "..\/..\/..\/admin\/language\/english\/blocks\/test-module.php",
         "relative": "admin\/language\/english\/blocks\/language.php"
     },
     {
-        "absolute": "..\/..\/..\/admin\/model\/blocks\/demo2.php",
+        "absolute": "..\/..\/..\/admin\/model\/blocks\/test-module.php",
         "relative": "admin\/model\/blocks\/model.php"
     },
     {
-        "absolute": "..\/..\/..\/admin\/view\/template\/blocks\/demo2\/create.tpl",
+        "absolute": "..\/..\/..\/admin\/view\/template\/blocks\/test-module\/create.tpl",
         "relative": "admin\/view\/template\/blocks\/create.tpl"
     },
     {
-        "absolute": "..\/..\/..\/admin\/view\/template\/blocks\/demo2\/edit.tpl",
+        "absolute": "..\/..\/..\/admin\/view\/template\/blocks\/test-module\/edit.tpl",
         "relative": "admin\/view\/template\/blocks\/edit.tpl"
     },
     {
-        "absolute": "..\/..\/..\/admin\/view\/template\/blocks\/demo2\/index.tpl",
+        "absolute": "..\/..\/..\/admin\/view\/template\/blocks\/test-module\/index.tpl",
         "relative": "admin\/view\/template\/blocks\/index.tpl"
     }
 ],
@@ -52,7 +52,7 @@
         },
         "autoload": {
             "psr-4": {
-                "Blocks\\Modules\\demo2\\": "system/Blocks/Modules/demo2/src"
+                "Blocks\\Modules\\test-module\\": "system/Blocks/Modules/test-module/src"
             }
         }
     }

@@ -39,10 +39,10 @@ class ModuleControllerTest extends TestCase
 	{
 		// cleanup
 		\Illuminate\Support\Facades\File::deleteDirectory(base_path('tmp/uploaded-module'));
-		\Illuminate\Support\Facades\File::delete(base_path('public/modules/demo2.zip'));
+		\Illuminate\Support\Facades\File::delete(base_path('public/modules/test-module.zip'));
 
 		// Given
-		$zip = app_path('tests/resources/demo2.zip');
+		$zip = app_path('tests/resources/test-module.zip');
 
 		// When
 		$this->call('post', 'module/publish', [], [
@@ -51,7 +51,7 @@ class ModuleControllerTest extends TestCase
 
 		// Then
 		$this->assertFileExists(base_path('tmp/uploaded-module'));
-		$this->assertFileExists(base_path('public/modules/demo2.zip'));
+		$this->assertFileExists(base_path('public/modules/test-module.zip'));
 
 		$this->assertResponseStatus(200);
 	}
