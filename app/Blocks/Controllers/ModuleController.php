@@ -12,20 +12,24 @@ class ModuleController extends BaseController
 {
 
 	protected $moduleManager;
+	protected $moduleRepository;
 
-	public function __construct(ModuleManager $moduleManager)
+	public function __construct(ModuleManager $moduleManager, ModuleRepository $moduleRepository)
 	{
 		$this->moduleManager = $moduleManager;
+		$this->moduleRepository = $moduleRepository;
 	}
 
 	public function index()
 	{
-		return 'list of modules';
+		$modules = $this->moduleRepository->published();
+
+		$this->layout->content = View::make('module.index', compact('modules'));
 	}
 
 	public function publish_form()
 	{
-		return View::make('module/publish');
+		$this->layout->content = View::make('module/publish');
 	}
 
 	public function publish()
@@ -33,6 +37,8 @@ class ModuleController extends BaseController
 		$zip = Input::file('module')->getPathname();
 
 		$this->moduleManager->store($zip);
+
+		return Response::make('Module uploaded successfully!', 200);
 	}
 
 

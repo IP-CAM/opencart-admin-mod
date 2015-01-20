@@ -21,9 +21,13 @@ class ModuleControllerTest extends TestCase
 	 */
 	public function it_opens_all_modules_page()
 	{
-		$this->call('get', 'module');
-
-		$this->assertResponseStatus(200);
+		$view = 'module.index';
+        $this->registerNestedView($view);
+        
+        $this->call('GET', 'module');
+        
+        // Check if view has needle data
+        $this->assertNestedViewHas($view, 'modules');
 	}
 
 	/**

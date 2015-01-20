@@ -1,6 +1,6 @@
 {
     "name": "test-module",
-    "version": "0.0.2",
+    "version": "0.0.1",
     "type": "module",
     "title": "Just a test module",
     "description": "",

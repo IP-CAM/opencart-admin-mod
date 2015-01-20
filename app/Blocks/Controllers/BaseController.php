@@ -1,8 +1,12 @@
 <?php namespace Blocks\Controllers;
 
 use Illuminate\Routing\Controller;
+use View;
 
-class BaseController extends Controller {
+class BaseController extends Controller
+{
+
+	protected $layout = 'default';
 
 	/**
 	 * Setup the layout used by the controller.

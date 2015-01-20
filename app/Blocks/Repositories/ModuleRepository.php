@@ -24,6 +24,16 @@ class ModuleRepository
 	}
 
 	/**
+	 * Get all published modules (with status = true)
+	 *
+	 * @return mixed
+	 */
+	public function published()
+	{
+		return $this->module->published()->get();
+	}
+
+	/**
 	 * Save module info
 	 *
 	 * @return bool

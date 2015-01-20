@@ -58,5 +58,28 @@ class ModuleRepositoryTest extends TestCase
 		$this->assertEquals($module->version, '3.0.0');
 		$this->assertEquals($totalModules, 1);
 	}
+
+	/**
+	 * @test
+	 */
+	public function it_fetches_published_modules()
+	{
+		// Arrange
+		$moduleInfo = App::make('Blocks\Helpers\ModuleJson');
+		$moduleInfo = $moduleInfo->describe('uploaded-module');
+		$moduleInfo->override('name', 'hello');
+		$this->repository->save($moduleInfo);
+
+		// Act
+		$modules = $this->repository->published();
+
+		$result = array_filter($modules->toArray(), function($val)
+		{
+			return ! $val['status'];
+		});
+
+		// Assert
+		$this->assertCount(0, $result);
+	}
 	
 }

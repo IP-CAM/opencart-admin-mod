@@ -6,5 +6,10 @@ class Module extends Model
 {
 	
 	protected $guarded = [];
+
+	public function scopePublished($q)
+	{
+		return $q->whereStatus(1);
+	}
 	
 }

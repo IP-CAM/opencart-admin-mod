@@ -9,6 +9,8 @@ class ModulesTableSeeder extends Seeder {
 	{
 		$faker = Faker::create();
 
+		DB::table('modules')->truncate();
+
 		foreach(range(1, 10) as $index)
 		{
 			$today = Carbon\Carbon::now();
