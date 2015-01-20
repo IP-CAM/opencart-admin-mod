@@ -42,6 +42,26 @@ class ModuleControllerTest extends TestCase
 
 	/**
 	 * @test
+	 * 
+	 * @expectedException Blocks\Exceptions\InvalidSecretException
+	 */
+	public function it_throws_exception_if_secret_key_is_bad()
+	{
+		// cleanup
+		\Illuminate\Support\Facades\File::deleteDirectory(base_path('tmp/uploaded-module'));
+		\Illuminate\Support\Facades\File::delete(base_path('public/modules/test-module.zip'));
+
+		// Given
+		$zip = app_path('tests/resources/test-module.zip');
+
+		// When
+		$this->call('post', 'module/publish', ['secret' => 'wrong-secret-key'], [
+			'module' => new UploadedFile($zip, 'module')
+		]);
+	}
+
+	/**
+	 * @test
 	 */
 	public function it_stores_module_from_post_request()
 	{
@@ -53,7 +73,7 @@ class ModuleControllerTest extends TestCase
 		$zip = app_path('tests/resources/test-module.zip');
 
 		// When
-		$this->call('post', 'module/publish', [], [
+		$this->call('post', 'module/publish', ['secret' => 'testing-secret'], [
 			'module' => new UploadedFile($zip, 'module')
 		]);
 

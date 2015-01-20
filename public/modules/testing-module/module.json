@@ -1,0 +1,59 @@
+{
+    "name": "test-module",
+    "version": "0.0.1",
+    "type": "module",
+    "title": "Just a test module",
+    "description": "",
+    "license": "",
+    "authors": [
+        {
+            "name": "Iurii Krevnyi",
+            "email": "yuriikrevnyi@gmail.com",
+            "homepage": ""
+        }
+    ],
+    
+    "files--help": {
+        "files": "Це такі файли, які будуть за межами модуля. Наприклад, контроллер/модель адмінки",
+        "files-absolute": "Це шлях до файла. Вставляти таким чином, щоб <шлях від корня до списка модулів> + <export-absolute> = файл",
+        "files-relative": "Шлях який використовується для структури файлів в архіві."
+    },
+
+    "files": [
+    {
+        "absolute": "..\/..\/..\/admin\/controller\/blocks\/test-module.php",
+        "relative": "admin\/controller\/blocks\/controller.php"
+    },
+    {
+        "absolute": "..\/..\/..\/admin\/language\/english\/blocks\/test-module.php",
+        "relative": "admin\/language\/english\/blocks\/language.php"
+    },
+    {
+        "absolute": "..\/..\/..\/admin\/model\/blocks\/test-module.php",
+        "relative": "admin\/model\/blocks\/model.php"
+    },
+    {
+        "absolute": "..\/..\/..\/admin\/view\/template\/blocks\/test-module\/create.tpl",
+        "relative": "admin\/view\/template\/blocks\/create.tpl"
+    },
+    {
+        "absolute": "..\/..\/..\/admin\/view\/template\/blocks\/test-module\/edit.tpl",
+        "relative": "admin\/view\/template\/blocks\/edit.tpl"
+    },
+    {
+        "absolute": "..\/..\/..\/admin\/view\/template\/blocks\/test-module\/index.tpl",
+        "relative": "admin\/view\/template\/blocks\/index.tpl"
+    }
+],
+
+    "composer": {
+        "require": {
+
+        },
+        "autoload": {
+            "psr-4": {
+                "Blocks\\Modules\\test-module\\": "system/Blocks/Modules/test-module/src"
+            }
+        }
+    }
+}

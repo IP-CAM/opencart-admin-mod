@@ -3,6 +3,7 @@
 use Blocks\Services\Secret;
 use Blocks\Repositories\ModuleRepository;
 use Blocks\Services\ModuleManager;
+use Blocks\Exceptions\InvalidSecretException;
 use View;
 use Input;
 use Redirect;
@@ -13,11 +14,13 @@ class ModuleController extends BaseController
 
 	protected $moduleManager;
 	protected $moduleRepository;
+	protected $secretService;
 
-	public function __construct(ModuleManager $moduleManager, ModuleRepository $moduleRepository)
+	public function __construct(ModuleManager $moduleManager, ModuleRepository $moduleRepository, Secret $secretService)
 	{
 		$this->moduleManager = $moduleManager;
 		$this->moduleRepository = $moduleRepository;
+		$this->secretService = $secretService;
 	}
 
 	public function index()
@@ -34,11 +37,26 @@ class ModuleController extends BaseController
 
 	public function publish()
 	{
+		if ( ! $this->checkSecret())
+		{
+			throw new InvalidSecretException("Invalid secret code");
+		}
+
 		$zip = Input::file('module')->getPathname();
 
 		$this->moduleManager->store($zip);
 
 		return Response::make('Module uploaded successfully!', 200);
+	}
+
+	/**
+	 * Checks secret code
+	 *
+	 * @return bool
+	 */
+	protected function checkSecret()
+	{
+		return $this->secretService->check(Input::get('secret'));
 	}
 
 
