@@ -26,7 +26,7 @@ class ModuleRepositoryTest extends TestCase
 		// First we will create new module
 		$moduleInfo->override('version', '1.0.0');
 		$this->repository->save($moduleInfo);
-		$module = $this->repository->find($moduleInfo->getName());
+		$module = $this->repository->find($moduleInfo->getName(), 'en');
 
 		$this->assertEquals($module->code, 'test-module');
 	}
@@ -52,7 +52,7 @@ class ModuleRepositoryTest extends TestCase
 		
 		// Assert
 		$moduleCode = $moduleInfo->getName();
-		$module = $this->repository->find($moduleCode);
+		$module = $this->repository->find($moduleCode, 'en');
 		$totalModules = Module::whereCode($moduleCode)->count();
 
 		$this->assertEquals($module->version, '3.0.0');
@@ -71,15 +71,52 @@ class ModuleRepositoryTest extends TestCase
 		$this->repository->save($moduleInfo);
 
 		// Act
-		$modules = $this->repository->published();
+		$modules = $this->repository->published('en');
 
-		$result = array_filter($modules->toArray(), function($val)
+		$result = array_filter($modules['modules']->toArray(), function($val)
 		{
 			return ! $val['status'];
 		});
 
 		// Assert
 		$this->assertCount(0, $result);
+	}
+
+	/**
+	 * @test
+	 */
+	public function it_fetches_modules_with_different_languages()
+	{
+		$result = $this->repository->published('en');
+
+		$this->assertArrayHasKey('language_code', $result);
+		$this->assertArrayHasKey('modules', $result);
+	}
+
+	/**
+	 * @test
+	 */
+	public function it_show_information_fow_single_module()
+	{
+		$moduleCode = Module::first()->pluck('code');
+		$module = $this->repository->find($moduleCode, 'en')->toArray();
+
+		$this->assertNotNull($module);
+		$this->assertArrayHasKey('id', $module);
+		$this->assertArrayHasKey('information', $module);
+	}
+
+	/**
+	 * @test
+	 */
+	public function it_shows_module_avalible_languages()
+	{
+		$moduleCode = Module::first()->pluck('code');
+		$result = $this->repository->getAvalibleLanguages($moduleCode);
+
+		$this->assertArrayHasKey('en', $result);
+		$this->assertArrayHasKey('ru', $result);
+		$this->assertArrayHasKey('ua', $result);
 	}
 	
 }

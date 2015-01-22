@@ -33,6 +33,31 @@ class ModuleControllerTest extends TestCase
 	/**
 	 * @test
 	 */
+	public function it_returns_all_published_modules_in_jsonp()
+	{
+		$this->call('get', '/module/all.json');
+
+		$this->assertResponseStatus(200);
+	}
+
+	/**
+	 * @test
+	 */
+	public function it_returns_modules_with_different_languages()
+	{
+		// eng
+		$this->call('get', 'module');
+
+		// eng
+		$this->call('get', 'module', ['lang' => 'en']);
+
+		// rus
+		$this->call('get', 'module', ['lang' => 'ru']);
+	}
+
+	/**
+	 * @test
+	 */
 	public function it_show_form_to_upload_new_module()
 	{
 		$this->call('get', 'module/publish');
@@ -81,7 +106,7 @@ class ModuleControllerTest extends TestCase
 		$this->assertFileExists(base_path('tmp/uploaded-module'));
 		$this->assertFileExists(base_path('public/modules/test-module.zip'));
 
-		$this->assertNotNull($this->moduleRepository->find('test-module'));
+		$this->assertNotNull($this->moduleRepository->find('test-module', 'en'));
 
 		$this->assertResponseStatus(200);
 	}

@@ -1,5 +1,6 @@
 <?php namespace Blocks\Controllers;
 
+use Blocks\Repositories\ModuleRepository;
 use View;
 use User;
 use Validator;
@@ -9,9 +10,12 @@ use Auth;
 
 class AdminModuleController extends BaseController
 {
+
+	protected $moduleRepository;
 	
-	function __construct()
+	function __construct(ModuleRepository $moduleRepository)
 	{
+		$this->moduleRepository = $moduleRepository;
 	}
 
 	public function home()
@@ -63,6 +67,23 @@ class AdminModuleController extends BaseController
 		Auth::logout(Auth::user()->id);
 
 		return Redirect::to('/');
+	}
+
+	public function index()
+	{
+		$modules = $this->moduleRepository->published('en')['modules'];
+
+		$this->layout->content = View::make('admin.module.index', compact('modules'));
+	}
+
+	public function edit($moduleCode)
+	{
+		$module = $this->moduleRepository->find($moduleCode, 'en');
+		$avalibleLanguages = $this->moduleRepository->getAvalibleLanguages($module->id);
+		
+		$this->layout->content = View::make('admin.module.edit')
+			->with('module', $module)
+			->with('avalibleLanguages', $avalibleLanguages);
 	}
 
 }

@@ -25,8 +25,9 @@ class ModuleController extends BaseController
 
 	public function index()
 	{
-		$modules = $this->moduleRepository->published();
-
+		$language_code = Input::get('language_code', 'en');
+		$modules = $this->moduleRepository->published($language_code)['modules'];
+		
 		$this->layout->content = View::make('module.index', compact('modules'));
 	}
 
@@ -59,5 +60,11 @@ class ModuleController extends BaseController
 		return $this->secretService->check(Input::get('secret'));
 	}
 
+	public function all_json()
+	{
+		$language_code = Input::get('language_code', 'en');
+
+		return $this->moduleRepository->published($language_code);
+	}
 
 }

@@ -7,9 +7,34 @@ class Module extends Model
 	
 	protected $guarded = [];
 
-	public function scopePublished($q)
+	public function information()
 	{
-		return $q->whereStatus(1);
+		return $this->hasMany('Blocks\Models\ModuleLanguage');
+	}
+
+	/**
+	 * Get module with related language
+	 *
+	 * @return mixed
+	 */
+	public function scopeWithLanguages($q, $language_code)
+	{
+		return $q->with(['information' => function($q) use ($language_code)
+		{
+			$q->where('language_code', $language_code);
+		}]);
+	}
+
+	/**
+	 * Get published modules (`status` = 1)
+	 *
+	 * @return mixed
+	 */
+	public function scopePublished($q, $language_code)
+	{
+		return $q
+			->withLanguages($language_code)
+			->where('status', 1);
 	}
 	
 }

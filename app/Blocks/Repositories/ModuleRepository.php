@@ -1,16 +1,22 @@
 <?php namespace Blocks\Repositories;
 
 use Blocks\Models\Module;
+use Blocks\Models\ModuleLanguage;
+use Blocks\Models\Language;
 use Blocks\Helpers\ModuleJson;
 
 class ModuleRepository
 {
 
 	protected $module;
+	protected $moduleLanguage;
+	protected $language;
 
-	public function __construct(Module $module)
+	public function __construct(Module $module, ModuleLanguage $moduleLanguage, Language $language)
 	{
 		$this->module = $module;
+		$this->moduleLanguage = $moduleLanguage;
+		$this->language = $language;
 	}
 
 	/**
@@ -18,9 +24,12 @@ class ModuleRepository
 	 *
 	 * @return mixed
 	 */
-	public function find($moduleName)
+	public function find($moduleCode, $language_code)
 	{
-		return $this->module->whereCode($moduleName)->first();
+		return $this
+			->module
+			->withLanguages($language_code)
+			->whereCode($moduleCode)->first();
 	}
 
 	/**
@@ -28,9 +37,33 @@ class ModuleRepository
 	 *
 	 * @return mixed
 	 */
-	public function published()
+	public function published($language_code)
 	{
-		return $this->module->published()->get();
+		return [
+			'language_code' => $language_code,
+			'modules' => $this->module->published($language_code)->get()
+		];
+	}
+
+	/**
+	 * Get module avalible languages
+	 *
+	 * @return mixed
+	 */
+	public function getAvalibleLanguages($moduleId)
+	{
+		$result = [];
+		$languages = $this->language->lists('code');
+
+		foreach ($languages as $language)
+		{
+			$result[$language] = $this->moduleLanguage
+				->where('module_id', $moduleId)
+				->where('language_code', $language)
+				->first();
+		}
+
+		return $result;
 	}
 
 	/**
@@ -40,7 +73,7 @@ class ModuleRepository
 	 */
 	public function save(ModuleJson $moduleInfo)
 	{
-		$module = $this->find($moduleInfo->getName());
+		$module = $this->find($moduleInfo->getName(), 'en');
 
 		if ($module)
 		{
