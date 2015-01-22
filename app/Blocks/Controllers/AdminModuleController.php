@@ -86,4 +86,11 @@ class AdminModuleController extends BaseController
 			->with('avalibleLanguages', $avalibleLanguages);
 	}
 
+	public function update($moduleCode)
+	{
+		$this->moduleRepository->saveLanguages($moduleCode, Input::get('languages'));
+
+		return Redirect::route('admin.module.index');
+	}
+
 }

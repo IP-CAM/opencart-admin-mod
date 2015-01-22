@@ -13,6 +13,16 @@ class Module extends Model
 	}
 
 	/**
+	 * Find module by code
+	 *
+	 * @return mixed
+	 */
+	public function scopeGetIdByCode($q, $moduleCode)
+	{
+		return $q->where('code', $moduleCode)->first()->pluck('id');
+	}
+
+	/**
 	 * Get module with related language
 	 *
 	 * @return mixed

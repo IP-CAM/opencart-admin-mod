@@ -67,7 +67,7 @@ class ModuleRepository
 	}
 
 	/**
-	 * Save module info
+	 * Save module info (called when user update module via console command)
 	 *
 	 * @return bool
 	 */
@@ -86,6 +86,31 @@ class ModuleRepository
 		$this->module->code = $moduleInfo->getName();
 		$this->module->version = $moduleInfo->getVersion();
 		return $this->module->save();
+	}
+
+	/**
+	 * Save module langs via admin panel
+	 *
+	 * @return void
+	 */
+	public function saveLanguages($moduleCode, $languages)
+	{
+		$moduleId = $this->module->getIdByCode($moduleCode);
+
+		// Remove all language of module
+		$this->moduleLanguage->removeByModuleId($moduleId);
+
+		// Save new languages
+		$data = array_map(function($language, $languageCode)
+		{
+			return new ModuleLanguage([
+				'title' => $language['title'],
+				'language_code' => $languageCode,
+				'description' => $language['description']
+			]);
+		}, $languages, array_keys($languages));
+
+		$this->module->find($moduleId)->information()->saveMany($data);
 	}
 
 }
