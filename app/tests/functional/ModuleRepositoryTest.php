@@ -20,13 +20,17 @@ class ModuleRepositoryTest extends TestCase
 	 */
 	public function it_stores_module_info_in_database()
 	{
+		exec('cp ' . base_path("app/tests/resources/test-module.zip") . ' ' . base_path("public/modules/test-module.zip"));
 		$moduleInfo = App::make('Blocks\Helpers\ModuleJson');
 		$moduleInfo = $moduleInfo->describe('test-module');
 
 		// First we will create new module
 		$moduleInfo->override('version', '1.0.0');
-		$this->repository->save($moduleInfo);
-		$module = $this->repository->find($moduleInfo->getName(), 'en');
+		$this->repository->save([
+			'code' => $moduleInfo->getCode(),
+			'version' => $moduleInfo->getVersion()
+		]);
+		$module = $this->repository->find($moduleInfo->getCode(), 'en');
 
 		$this->assertEquals($module->code, 'test-module');
 	}
@@ -42,16 +46,25 @@ class ModuleRepositoryTest extends TestCase
 		
 		// Act
 		$moduleInfo->override('version', '1.0.0');
-		$this->repository->save($moduleInfo);
+		$this->repository->save([
+			'code' => $moduleInfo->getCode(),
+			'version' => $moduleInfo->getVersion()
+		]);
 		
 		$moduleInfo->override('version', '2.0.0');
-		$this->repository->save($moduleInfo);
+		$this->repository->save([
+			'code' => $moduleInfo->getCode(),
+			'version' => $moduleInfo->getVersion()
+		]);
 
 		$moduleInfo->override('version', '3.0.0');
-		$this->repository->save($moduleInfo);
+		$this->repository->save([
+			'code' => $moduleInfo->getCode(),
+			'version' => $moduleInfo->getVersion()
+		]);
 		
 		// Assert
-		$moduleCode = $moduleInfo->getName();
+		$moduleCode = $moduleInfo->getCode();
 		$module = $this->repository->find($moduleCode, 'en');
 		$totalModules = Module::whereCode($moduleCode)->count();
 
@@ -68,7 +81,10 @@ class ModuleRepositoryTest extends TestCase
 		$moduleInfo = App::make('Blocks\Helpers\ModuleJson');
 		$moduleInfo = $moduleInfo->describe('test-module');
 		$moduleInfo->override('name', 'hello');
-		$this->repository->save($moduleInfo);
+		$this->repository->save([
+			'code' => $moduleInfo->getCode(),
+			'version' => $moduleInfo->getVersion()
+		]);
 
 		// Act
 		$modules = $this->repository->published('en');

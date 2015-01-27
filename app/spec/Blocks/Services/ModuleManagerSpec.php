@@ -25,7 +25,7 @@ class ModuleManagerSpec extends ObjectBehavior
     {
     	$zip = 'path/to/uploaded-module.zip';
     	$json = json_encode([
-    		'name' => 'demo-name',
+    		'code' => 'demo-name',
     		'version' => 'demo-version',
     		'title' => 'demo-title',
     		'description' => 'demo-description',
@@ -35,11 +35,25 @@ class ModuleManagerSpec extends ObjectBehavior
     	$moduleZip->copy($zip, 'demo-module')->shouldBeCalled();
 
         $moduleJson->describe('uploaded-module')->shouldBeCalled()->willReturn($moduleJson);
-        $moduleJson->getName()->shouldBeCalled()->willReturn('demo-module');
+        $moduleJson->getCode()->shouldBeCalled()->willReturn('demo-module');
+        $moduleJson->getVersion()->shouldBeCalled()->willReturn('demo-version');
 
-        $moduleRepository->save($moduleJson)->shouldBeCalled();
+        $moduleRepository->save([
+            'code' => 'demo-module',
+            'version' => 'demo-version'
+        ])->shouldBeCalled();
 
     	$this->store($zip)->shouldBe(true);
+    }
+
+    function it_checks_if_module_zip_exists_by_module_code(ModuleZip $moduleZip)
+    {
+        $moduleCode = 'demo-module';
+        $modulePath = base_path('public/modules/demo-module.zip');
+
+        $moduleZip->find($moduleCode)->shouldBeCalled()->willReturn($modulePath);
+
+        $this->find($moduleCode)->shouldReturn($modulePath);
     }
 
 }

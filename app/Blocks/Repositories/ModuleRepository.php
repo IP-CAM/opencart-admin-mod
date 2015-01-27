@@ -71,20 +71,22 @@ class ModuleRepository
 	 *
 	 * @return bool
 	 */
-	public function save(ModuleJson $moduleInfo)
+	public function save(array $moduleInfo)
 	{
-		$module = $this->find($moduleInfo->getName(), 'en');
+		$module = $this->find($moduleInfo['code'], 'en');
 
 		if ($module)
 		{
 			$module = $this->module->find($module->id);
-			$module->code = $moduleInfo->getName();
-			$module->version = $moduleInfo->getVersion();
+			$module->price = empty($moduleInfo['price']) ? 0 : $moduleInfo['price'];
+			$module->code = $moduleInfo['code'];
+			$module->version = $moduleInfo['version'];
+			$module->status = empty($moduleInfo['status']) ? 0 : 1;
 			return $module->save();
 		}
 
-		$this->module->code = $moduleInfo->getName();
-		$this->module->version = $moduleInfo->getVersion();
+		$this->module->code = $moduleInfo['code'];
+		$this->module->version = $moduleInfo['version'];
 		return $this->module->save();
 	}
 

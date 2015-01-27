@@ -15,7 +15,7 @@ class CreateModuleTable extends Migration {
 		Schema::create('modules', function(Blueprint $table)
 		{
 			$table->increments('id');
-			$table->text('code');
+			$table->string('code', 255)->unique();
 			$table->text('version', '0.0.1');
 			$table->integer('price')->default(0);
 			$table->integer('downloads')->default(0);

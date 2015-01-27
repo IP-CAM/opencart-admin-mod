@@ -2,6 +2,7 @@
 
 use Illuminate\Filesystem\Filesystem;
 use Blocks\Helpers\ModuleZip;
+use Blocks\Helpers\Exceptions\InvatidCodeException;
 
 class ModuleJson
 {
@@ -35,9 +36,9 @@ class ModuleJson
      *
      * @return string
      */
-    protected function getModuleJsonPath($moduleName)
+    protected function getModuleJsonPath($moduleCode)
     {
-        if ($moduleName == 'uploaded-module')
+        if ($moduleCode == 'uploaded-module')
         {
             return base_path("tmp/uploaded-module/module.json");
         }
@@ -46,11 +47,11 @@ class ModuleJson
         // Firstly we have to unzip this module to be able to read
         // module.json file
         $this->moduleZip->unzip(
-            base_path("public/modules/{$moduleName}.zip"),
-            base_path("public/modules/{$moduleName}")
+            "public/modules/{$moduleCode}.zip",
+            "public/modules/{$moduleCode}"
         );
 
-        return base_path("public/modules/{$moduleName}/module.json");
+        return base_path("public/modules/{$moduleCode}/module.json");
     }
 
     /**
@@ -59,13 +60,13 @@ class ModuleJson
      *
      * @return mixed
      */
-    public function describe($moduleName)
+    public function describe($moduleCode)
     {
-    	$json = $this->filesystem->get($this->getModuleJsonPath($moduleName));
+    	$json = $this->filesystem->get($this->getModuleJsonPath($moduleCode));
     	$this->moduleInfo = json_decode($json);
 
         // Remove temporary zip file (created in $this->getModuleJsonPath)
-        $this->filesystem->deleteDirectory(base_path("public/modules/{$moduleName}"));
+        $this->filesystem->deleteDirectory(base_path("public/modules/{$moduleCode}"));
 
     	return $this;
     }
@@ -86,9 +87,14 @@ class ModuleJson
         $this->moduleInfo->{$paramCode} = $value;
     }
 
-    public function getName()
+    public function getCode()
     {
-        return $this->grab('name');
+        if (empty($this->grab('code')))
+        {
+            throw new InvatidCodeException("Module shouldn't be empty!");
+        }
+
+        return $this->grab('code');
     }
 
     public function getVersion()

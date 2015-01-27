@@ -19,4 +19,13 @@ class ModuleZipSpec extends ObjectBehavior
         $this->shouldHaveType('Blocks\Helpers\ModuleZip');
     }
 
+    function it_can_find_module_by_module_code(Filesystem $filesystem)
+    {
+    	$path = base_path('public/modules/demo-module.zip');
+
+    	$filesystem->get($path)->shouldBeCalled()->willReturn(true);
+
+    	$this->find('demo-module')->shouldReturn($path);
+    }
+
 }

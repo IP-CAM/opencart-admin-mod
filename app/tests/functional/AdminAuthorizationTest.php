@@ -1,6 +1,6 @@
 <?php 
 
-class AdminModulesControllerTest extends TestCase
+class AdminAuthorizationTest extends TestCase
 {
 
 	public function setUp()

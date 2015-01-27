@@ -11,10 +11,22 @@ class DatabaseSeeder extends Seeder {
 	{
 		Eloquent::unguard();
 
+		// Turn off foreign keys
+		if (App::Environment() !== 'testing')
+        {
+            DB::statement('SET FOREIGN_KEY_CHECKS=0;');
+        }
+
 		$this->call('UsersTableSeeder');
 		$this->call('LanguagesTableSeeder');
 		$this->call('ModulesTableSeeder');
 		$this->call('ModuleLanguageTableSeeder');
+
+		// Turn on foreign keys
+		if (App::Environment() !== 'testing')
+        {
+            DB::statement('SET FOREIGN_KEY_CHECKS=1;');
+        }
 	}
 
 }

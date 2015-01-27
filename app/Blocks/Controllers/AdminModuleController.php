@@ -1,6 +1,7 @@
 <?php namespace Blocks\Controllers;
 
 use Blocks\Repositories\ModuleRepository;
+use Blocks\Services\ModuleManager;
 use View;
 use User;
 use Validator;
@@ -12,15 +13,64 @@ class AdminModuleController extends BaseController
 {
 
 	protected $moduleRepository;
+	protected $moduleManager;
 	
-	function __construct(ModuleRepository $moduleRepository)
+	function __construct(ModuleRepository $moduleRepository, ModuleManager $moduleManager)
 	{
 		$this->moduleRepository = $moduleRepository;
+		$this->moduleManager = $moduleManager;
 	}
 
 	public function home()
 	{
 		$this->layout->content = View::make('admin.home');
+	}
+
+	/**
+	 * Displays a list of all modules
+	 *
+	 * @return Response
+	 */
+	public function index()
+	{
+		$modules = $this->moduleRepository->published('en')['modules'];
+
+		$this->layout->content = View::make('admin.module.index', compact('modules'));
+	}
+
+	/**
+	 * Displays form to edit module
+	 *
+	 * @return Response
+	 */
+	public function edit($moduleCode)
+	{
+		$module = $this->moduleRepository->find($moduleCode, 'en');
+		$avalibleLanguages = $this->moduleRepository->getAvalibleLanguages($module->id);
+		$zip = $this->moduleManager->find($moduleCode);
+		
+		$this->layout->content = View::make('admin.module.edit')
+			->with('module', $module)
+			->with('zip', $zip)
+			->with('avalibleLanguages', $avalibleLanguages);
+	}
+
+	/**
+	 * Updates module information
+	 *
+	 * @return Response
+	 */
+	public function update($moduleCode)
+	{
+		$this->moduleRepository->save([
+			'code' => $moduleCode,
+			'price' => Input::get('price'),
+			'version' => Input::get('version'),
+			'status' => Input::get('status')
+		]);
+		$this->moduleRepository->saveLanguages($moduleCode, Input::get('languages'));
+
+		return Redirect::route('admin.module.index');
 	}
 
 	/**
@@ -36,7 +86,7 @@ class AdminModuleController extends BaseController
 	/**
 	 * Handle user authorization
 	 *
-	 * @return void
+	 * @return Response
 	 */
 	public function login_post()
 	{
@@ -67,30 +117,6 @@ class AdminModuleController extends BaseController
 		Auth::logout(Auth::user()->id);
 
 		return Redirect::to('/');
-	}
-
-	public function index()
-	{
-		$modules = $this->moduleRepository->published('en')['modules'];
-
-		$this->layout->content = View::make('admin.module.index', compact('modules'));
-	}
-
-	public function edit($moduleCode)
-	{
-		$module = $this->moduleRepository->find($moduleCode, 'en');
-		$avalibleLanguages = $this->moduleRepository->getAvalibleLanguages($module->id);
-		
-		$this->layout->content = View::make('admin.module.edit')
-			->with('module', $module)
-			->with('avalibleLanguages', $avalibleLanguages);
-	}
-
-	public function update($moduleCode)
-	{
-		$this->moduleRepository->saveLanguages($moduleCode, Input::get('languages'));
-
-		return Redirect::route('admin.module.index');
 	}
 
 }

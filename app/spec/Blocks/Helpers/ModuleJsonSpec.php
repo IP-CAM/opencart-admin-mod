@@ -25,7 +25,7 @@ class ModuleJsonSpec extends ObjectBehavior
         $module = 'uploaded-module';
     	$modulePath = 'tmp/uploaded-module/module.json';
     	$json = json_encode([
-    		'name' => 'demo-name',
+    		'code' => 'demo-name',
     		'version' => 'demo-version',
     		'title' => 'demo-title',
     		'description' => 'demo-description',
@@ -42,7 +42,7 @@ class ModuleJsonSpec extends ObjectBehavior
         $module = 'uploaded-module';
     	$modulePath = 'tmp/uploaded-module/module.json';
     	$json = json_encode([
-    		'name' => 'demo-name',
+    		'code' => 'demo-name',
     		'version' => 'demo-version',
     		'title' => 'demo-title',
     		'description' => 'demo-description',
@@ -52,7 +52,7 @@ class ModuleJsonSpec extends ObjectBehavior
         $filesystem->deleteDirectory(base_path("public/modules/{$module}"))->shouldBeCalled();
 
     	$moduleInfo = $this->describe($module);
-    	$moduleInfo->getName()->shouldBe('demo-name');
+    	$moduleInfo->getCode()->shouldBe('demo-name');
     	$moduleInfo->getVersion()->shouldBe('demo-version');
     	$moduleInfo->getTitle()->shouldBe('demo-title');
     	$moduleInfo->getDescription()->shouldBe('demo-description');
@@ -63,7 +63,7 @@ class ModuleJsonSpec extends ObjectBehavior
         $module = 'demo-module';
         $modulePath = 'public/modules/demo-module/module.json';
         $json = json_encode([
-            'name' => 'demo-name',
+            'code' => 'demo-name',
             'version' => 'demo-version',
             'title' => 'demo-title',
             'description' => 'demo-description',
@@ -84,7 +84,7 @@ class ModuleJsonSpec extends ObjectBehavior
         $module = 'demo-module';
         $modulePath = 'public/modules/demo-module/module.json';
         $json = json_encode([
-            'name' => 'demo-name',
+            'code' => 'demo-name',
             'version' => 'demo-version',
             'title' => 'demo-title',
             'description' => 'demo-description',
@@ -94,7 +94,7 @@ class ModuleJsonSpec extends ObjectBehavior
         $filesystem->deleteDirectory(base_path("public/modules/{$module}"))->shouldBeCalled();
 
         $moduleInfo = $this->describe($module);
-        $moduleInfo->getName()->shouldBe('demo-name');
+        $moduleInfo->getCode()->shouldBe('demo-name');
         $moduleInfo->getVersion()->shouldBe('demo-version');
         $moduleInfo->getTitle()->shouldBe('demo-title');
         $moduleInfo->getDescription()->shouldBe('demo-description');
@@ -105,7 +105,7 @@ class ModuleJsonSpec extends ObjectBehavior
         $module = 'demo-module';
         $modulePath = 'public/modules/demo-module/module.json';
         $json = json_encode([
-            'name' => 'demo-name',
+            'code' => 'demo-name',
             'version' => 'demo-version',
             'title' => 'demo-title',
             'description' => 'demo-description',
@@ -118,6 +118,24 @@ class ModuleJsonSpec extends ObjectBehavior
         $moduleInfo->override('version', '1.0.0');
         
         $moduleInfo->shouldThrow('InvalidArgumentException')->during('override', ['', '']);
+    }
+
+    function it_throws_exception_if_module_has_empty_code(Filesystem $filesystem)
+    {
+        $module = 'demo-module';
+        $modulePath = 'public/modules/demo-module/module.json';
+        $json = json_encode([
+            'code' => '',
+            'version' => 'demo-version',
+            'title' => 'demo-title',
+            'description' => 'demo-description',
+        ]);
+
+        $filesystem->get($modulePath)->shouldBeCalled()->willReturn($json);
+        $filesystem->deleteDirectory(base_path("public/modules/{$module}"))->shouldBeCalled();
+        
+        $moduleInfo = $this->describe($module);
+        $moduleInfo->shouldThrow('Blocks\Helpers\Exceptions\InvatidCodeException')->during('getCode');
     }
 
 }

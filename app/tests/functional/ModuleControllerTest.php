@@ -1,6 +1,7 @@
 <?php 
 
 use Symfony\Component\HttpFoundation\File\UploadedFile;
+use Blocks\Models\Module;
 
 class ModuleControllerTest extends TestCase
 {
@@ -12,6 +13,7 @@ class ModuleControllerTest extends TestCase
 		parent::setUp();
 
 		$this->moduleRepository = App::make('Blocks\Repositories\ModuleRepository');
+		$this->keyRepository = App::make('Blocks\Repositories\KeyRepository');
 
 		File::deleteDirectory(base_path('tmp/uploaded-module'));
 	}
@@ -36,6 +38,18 @@ class ModuleControllerTest extends TestCase
 	public function it_returns_all_published_modules_in_jsonp()
 	{
 		$this->call('get', '/module/all.json');
+
+		$this->assertResponseStatus(200);
+	}
+
+	/**
+	 * @test
+	 */
+	public function it_shows_module_information_in_jsonp()
+	{
+		$moduleCode = Module::first()->pluck('code');
+		
+		$this->call('get', "/module/{$moduleCode}.json");
 
 		$this->assertResponseStatus(200);
 	}
@@ -96,7 +110,7 @@ class ModuleControllerTest extends TestCase
 
 		// Given
 		$zip = app_path('tests/resources/test-module.zip');
-
+		
 		// When
 		$this->call('post', 'module/publish', ['secret' => 'testing-secret'], [
 			'module' => new UploadedFile($zip, 'module')
@@ -108,6 +122,31 @@ class ModuleControllerTest extends TestCase
 
 		$this->assertNotNull($this->moduleRepository->find('test-module', 'en'));
 
+		$this->assertResponseStatus(200);
+	}
+
+	/**
+	 * @test
+	 */
+	function it_creates_key_and_triggers_download()
+	{
+		$moduleCode = 'test-download-module';
+		$domain = 'test-domain.com';
+
+		File::copy(
+			base_path("app/tests/resources/test-module.zip"),
+			base_path("public/modules/{$moduleCode}.zip")
+		);
+
+		$this->call('get', "/module/{$moduleCode}.zip");
+		$this->call('get', "/module/{$moduleCode}.zip");
+		$this->call('get', "/module/{$moduleCode}.zip");
+		$keyInfo = $this->keyRepository->byModuleAndDomain($moduleCode, $domain);
+
+		print_r($this->keyRepository->all()->toArray());
+
+		$this->assertEquals($domain, $keyInfo->domain);
+		$this->assertEquals($moduleCode, $keyInfo->module_code);
 		$this->assertResponseStatus(200);
 	}
 	

@@ -27,12 +27,29 @@ class ModuleManager
     	$moduleInfo = $this->moduleJson->describe('uploaded-module');
 
     	// copy uploaded module to public/modules/{module_name}
-    	$this->moduleZip->copy($zip, $moduleInfo->getName());
+    	$this->moduleZip->copy($zip, $moduleInfo->getCode());
 
         // update module info in db
-        $this->moduleRepository->save($moduleInfo);
+        $this->moduleRepository->save([
+            'code' => $moduleInfo->getCode(), 
+            'version' => $moduleInfo->getVersion()
+        ]);
 
         return true;
+    }
+
+    /**
+     * Check if module exists by its code
+     *
+     * @return bool
+     */
+    public function find($moduleCode)
+    {
+        $path = $this->moduleZip->find($moduleCode);
+
+        if ($path) return $path;
+
+        return false;
     }
 
 }
