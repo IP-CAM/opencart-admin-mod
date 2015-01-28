@@ -133,6 +133,8 @@ class ModuleControllerTest extends TestCase
 		$moduleCode = 'test-download-module';
 		$domain = 'test-domain.com';
 
+		Module::whereCode($moduleCode)->update(['price' => '999']);
+
 		File::copy(
 			base_path("app/tests/resources/test-module.zip"),
 			base_path("public/modules/{$moduleCode}.zip")
@@ -141,7 +143,7 @@ class ModuleControllerTest extends TestCase
 		$this->call('get', "/module/{$moduleCode}.zip");
 		$keyInfo = $this->keyRepository->byModuleAndDomain($moduleCode, $domain);
 		$allKeys = $this->keyRepository->all()->toArray();
-		
+
 		$this->assertCount(0, $allKeys);
 		$this->assertNull($keyInfo);
 		$this->assertResponseStatus(200);
@@ -155,6 +157,8 @@ class ModuleControllerTest extends TestCase
 		$moduleCode = 'test-download-module';
 		$domain = 'example.com';
 
+		Module::whereCode($moduleCode)->update(['price' => '0']);
+
 		File::copy(
 			base_path("app/tests/resources/test-module.zip"),
 			base_path("public/modules/{$moduleCode}.zip")
@@ -166,6 +170,48 @@ class ModuleControllerTest extends TestCase
 
 		$this->assertCount(1, $allKeys);
 		$this->assertNotNull($keyInfo);
+		$this->assertResponseStatus(200);
+	}
+
+	/**
+	 * @test
+	 */
+	public function it_checks_module_version_and_has_updates()
+	{
+		// Arrange
+		$moduleCode = 'test-download-module';
+		Module::whereCode($moduleCode)->update(['version' => '0.2.1']);
+
+		// Act
+		$query = $this->call('get', 'module/version', [
+			'module' => $moduleCode,
+			'version' => '0.0.1'
+		]);
+
+		$json = json_decode($query->getContent());
+
+		$this->assertTrue($json->status);
+		$this->assertResponseStatus(200);
+	}
+
+	/**
+	 * @test
+	 */
+	public function it_checks_module_version_and_does_not_has_updates()
+	{
+		// Arrange
+		$moduleCode = 'test-download-module';
+		Module::whereCode($moduleCode)->update(['version' => '0.2.0']);
+
+		// Act
+		$query = $this->call('get', 'module/version', [
+			'module' => $moduleCode,
+			'version' => '0.2.1'
+		]);
+
+		$json = json_decode($query->getContent());
+
+		$this->assertTrue($json->status);
 		$this->assertResponseStatus(200);
 	}
 	

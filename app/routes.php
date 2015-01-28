@@ -13,6 +13,7 @@ Route::get('module/{code}.zip', [
 	'uses' => 'Blocks\Controllers\ModuleController@download'
 ]);
 
+Route::get('module/version', 'Blocks\Controllers\ModuleController@version');
 Route::get('module/publish', 'Blocks\Controllers\ModuleController@publish_form');
 Route::post('module/publish', ['as' => 'module.publish', 'uses' => 'Blocks\Controllers\ModuleController@publish']);
 Route::resource('module', 'Blocks\Controllers\ModuleController');

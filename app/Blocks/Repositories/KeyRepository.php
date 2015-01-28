@@ -21,16 +21,6 @@ class KeyRepository
 	}
 
 	/**
-	 * Check if key exists in database
-	 *
-	 * @return number
-	 */
-	public function exists($key)
-	{
-		return $this->keyModel->where('code', $key)->count();
-	}
-
-	/**
 	 * Find key by module id and domain name
 	 *
 	 * @return mixed

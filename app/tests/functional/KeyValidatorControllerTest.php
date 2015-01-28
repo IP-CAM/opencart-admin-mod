@@ -15,96 +15,39 @@ class KeyValidatorControllerTest extends TestCase
 	/**
 	 * @test
 	 */
-	public function it_validates_module_key_with_domain()
+	public function it_checks_if_module_is_related_to_specific_domain()
 	{
-		$key = 'random-key';
-		$module = 'test-download-module';
-		$domain = 'domain.com';
+		// Arrange
+		$this->keyRepository->store('test-download-module', 'example.com');
 
-		$this->keyRepository->store($key, $module, $domain);
-
-		// Existing module
+		// Act
 		$request = $this->call('get', 'key/validate', [
-			'key' => $key,
-			'module' => $module,
-			'domain' => $domain
+			'module' => 'test-download-module',
+			'domain' => 'example.com'
 		]);
 
-		$content = json_decode($request->getContent());
-		$this->assertTrue($content->status);
+		$json = json_decode($request->getContent());
 
+		// Assert
+		$this->assertTrue($json->status);
 		$this->assertResponseStatus(200);
 	}
 
 	/**
 	 * @test
 	 */
-	public function it_fails_to_validate_bad_module_key()
+	public function it_fails_check_if_module_is_not_related_to_domain()
 	{
-		$key = 'random-key';
-		$module = 'test-download-module';
-		$domain = 'domain.com';
-
-		$this->keyRepository->store($key, $module, $domain);
-
-		// Bad module key
+		// Act
 		$request = $this->call('get', 'key/validate', [
-			'key' => 'bad-key',
-			'module' => $module,
-			'domain' => $domain
+			'module' => 'test-download-module',
+			'domain' => 'bad-domain.com'
 		]);
 
-		$content = json_decode($request->getContent());
-		$this->assertFalse($content->status);
+		$json = json_decode($request->getContent());
 
-		$this->assertResponseStatus(200);
-	}
-
-	/**
-	 * @test
-	 */
-	public function it_fails_to_validate_bad_module_code()
-	{
-		$key = 'random-key';
-		$module = 'test-download-module';
-		$domain = 'domain.com';
-
-		$this->keyRepository->store($key, $module, $domain);
-
-		// Bad module key
-		$request = $this->call('get', 'key/validate', [
-			'key' => $key,
-			'module' => 'bad-module',
-			'domain' => $domain
-		]);
-
-		$content = json_decode($request->getContent());
-		$this->assertFalse($content->status);
-
-		$this->assertResponseStatus(200);
-	}
-
-	/**
-	 * @test
-	 */
-	public function it_fails_to_validate_bad_domain_to_module()
-	{
-		$key = 'random-key';
-		$module = 'test-download-module';
-		$domain = 'domain.com';
-
-		$this->keyRepository->store($key, $module, $domain);
-
-		// Bad module key
-		$request = $this->call('get', 'key/validate', [
-			'key' => $key,
-			'module' => $module,
-			'domain' => 'bad-domain'
-		]);
-
-		$content = json_decode($request->getContent());
-		$this->assertFalse($content->status);
-
+		// Assert
+		$this->assertFalse($json->status);
 		$this->assertResponseStatus(200);
 	}
 	

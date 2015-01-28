@@ -43,6 +43,23 @@ class ModuleRepository
 	}
 
 	/**
+	 * Check if module has new version
+	 *
+	 * @return bool
+	 */
+	public function hasUpdates($moduleCode, $version)
+	{
+		$currentVersion = $this->module->whereCode($moduleCode)->first()->pluck('version');
+
+		if (version_compare($currentVersion, $version))
+		{
+			return true;
+		}
+		
+		return false;
+	}
+
+	/**
 	 * Get all published modules (with status = true)
 	 *
 	 * @return mixed

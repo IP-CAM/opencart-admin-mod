@@ -101,13 +101,30 @@ class ModuleController extends BaseController
 	}
 
 	/**
+	 * Check module verion
+	 *
+	 * @return Response
+	 */
+	public function version()
+	{
+		$moduleCode = Input::get('module');
+
+		$status = $this->moduleRepository->hasUpdates(
+			$moduleCode, 
+			Input::get('version')
+		);
+
+		return Response::json(compact('status'));
+	}
+
+	/**
 	 * Download module zip and add use domain + module name to database
 	 *
 	 * @return Response
 	 */
 	public function download($moduleCode)
 	{
-		if ($this->moduleRepository->isFree($moduleCode))
+		if (isset($this->moduleRepository->isFree($moduleCode)->id))
 		{
 			$this->keyRepository->store($moduleCode, 'example.com');
 		}

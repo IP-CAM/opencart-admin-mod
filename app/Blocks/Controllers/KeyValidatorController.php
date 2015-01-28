@@ -1,17 +1,17 @@
 <?php namespace Blocks\Controllers;
 
-use Blocks\Services\KeyManager;
+use Blocks\Repositories\KeyRepository;
 use Input;
 use Response;
 
 class KeyValidatorController extends BaseController
 {
 
-	protected $keyManager;
+	protected $keyRepository;
 
-	function __construct(KeyManager $keyManager)
+	function __construct(KeyRepository $keyRepository)
 	{
-		$this->keyManager = $keyManager;
+		$this->keyRepository = $keyRepository;
 	}
 	
 	/**
@@ -21,13 +21,12 @@ class KeyValidatorController extends BaseController
 	 */
 	public function validate()
 	{
-		$status = $this->keyManager->validate(
-			Input::get('key'),
-			Input::get('module'),
+		$status = (bool) $this->keyRepository->byModuleAndDomain(
+			Input::get('module'), 
 			Input::get('domain')
 		);
 
-		return Response::json(['status' => $status]);
+		return Response::json(compact('status'));
 	}
 
 }
