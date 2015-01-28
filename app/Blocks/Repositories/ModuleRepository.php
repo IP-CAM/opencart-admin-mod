@@ -33,6 +33,16 @@ class ModuleRepository
 	}
 
 	/**
+	 * Check if module is free
+	 *
+	 * @return bool
+	 */
+	public function isFree($moduleCode)
+	{
+		return $this->module->whereCode($moduleCode)->isFree();
+	}
+
+	/**
 	 * Get all published modules (with status = true)
 	 *
 	 * @return mixed

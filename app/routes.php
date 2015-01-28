@@ -4,12 +4,21 @@ Route::get('/', 'Blocks\Controllers\HomeController@index');
 
 // Json modules
 Route::get('module/all.json', 'Blocks\Controllers\ModuleController@all_json');
-Route::get('module/{code}.json', 'Blocks\Controllers\ModuleController@find_json');
-Route::get('module/{code}.zip', 'Blocks\Controllers\ModuleController@download');
+Route::get('module/{code}.json', [
+	'as' => 'module_json_path',
+	'uses' => 'Blocks\Controllers\ModuleController@find_json'
+]);
+Route::get('module/{code}.zip', [
+	'as' => 'module_download_path',
+	'uses' => 'Blocks\Controllers\ModuleController@download'
+]);
 
 Route::get('module/publish', 'Blocks\Controllers\ModuleController@publish_form');
 Route::post('module/publish', ['as' => 'module.publish', 'uses' => 'Blocks\Controllers\ModuleController@publish']);
 Route::resource('module', 'Blocks\Controllers\ModuleController');
+
+// Validate keys
+Route::get('key/validate', 'Blocks\Controllers\KeyValidatorController@validate');
 
 Route::group(['before' => 'guest'], function()
 {

@@ -48,11 +48,13 @@ class KeyRepository
 	 *
 	 * @return bool
 	 */
-	public function store($key, $moduleCode, $domain)
+	public function store($moduleCode, $domain)
 	{
+		// If key already exists - we will not create new
+		if ($this->byModuleAndDomain($moduleCode, $domain)) return false;
+
 		$this->keyModel->module_code = $moduleCode;
 		$this->keyModel->domain = $domain;
-		$this->keyModel->code = $key;
 
 		return $this->keyModel->save();
 	}

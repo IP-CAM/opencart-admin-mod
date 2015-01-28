@@ -2,11 +2,12 @@
 
 use Blocks\Services\Secret;
 use Blocks\Repositories\ModuleRepository;
-use Blocks\Services\KeyManager;
+use Blocks\Repositories\KeyRepository;
 use Blocks\Services\ModuleManager;
 use Blocks\Exceptions\InvalidSecretException;
 use Blocks\Exceptions\ModuleZipNotFoundException;
 use Symfony\Component\HttpFoundation\File\UploadedFile;
+use Illuminate\Support\Facades\URL;
 use View;
 use Input;
 use Redirect;
@@ -17,18 +18,18 @@ class ModuleController extends BaseController
 
 	protected $moduleManager;
 	protected $moduleRepository;
-	protected $keyManager;
+	protected $keyRepository;
 	protected $secretService;
 
 	public function __construct(
 		ModuleManager $moduleManager, 
 		ModuleRepository $moduleRepository, 
-		KeyManager $keyManager, 
+		KeyRepository $keyRepository, 
 		Secret $secretService)
 	{
 		$this->moduleManager = $moduleManager;
 		$this->moduleRepository = $moduleRepository;
-		$this->keyManager = $keyManager;
+		$this->keyRepository = $keyRepository;
 		$this->secretService = $secretService;
 	}
 
@@ -89,19 +90,28 @@ class ModuleController extends BaseController
 	public function find_json($moduleCode)
 	{
 		$module = $this->moduleRepository->find($moduleCode, Input::get('language_code', 'en'));
-		$module->zip = $this->moduleManager->find($moduleCode);
+		$module->zip = NULL;
+		
+		if ($this->moduleManager->find($moduleCode))
+		{
+			$module->zip = URL::route('module_download_path', $moduleCode);
+		}
 
 		return $module;
 	}
 
 	/**
-	 * Download module zip
+	 * Download module zip and add use domain + module name to database
 	 *
 	 * @return Response
 	 */
 	public function download($moduleCode)
 	{
-		$key = $this->keyManager->create($moduleCode, 'test-domain.com');
+		if ($this->moduleRepository->isFree($moduleCode))
+		{
+			$this->keyRepository->store($moduleCode, 'example.com');
+		}
+
 		$zip = $this->moduleManager->find($moduleCode);
 		
 		if ( ! $zip)

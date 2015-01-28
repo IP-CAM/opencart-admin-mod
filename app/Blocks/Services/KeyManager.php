@@ -44,4 +44,31 @@ class KeyManager
         return $this->keyRepository->store($key, $moduleCode, $domain);
     }
 
+    /**
+     * Creates new dummy key(NULL key)
+     *
+     * @return bool
+     */
+    public function createDummy($moduleCode, $domain)
+    {
+        return $this->keyRepository->store(NULL, $moduleCode, $domain);
+    }
+
+    /**
+     * Validates given key + module + domain
+     *
+     * @return bool
+     */
+    public function validate($key, $moduleCode, $domain)
+    {
+        $module = $this->keyRepository->byModuleAndDomain($moduleCode, $domain);
+
+        if (isset($module->code) AND $module->code == $key)
+        {
+            return true;
+        }
+
+        return false;
+    }
+
 }

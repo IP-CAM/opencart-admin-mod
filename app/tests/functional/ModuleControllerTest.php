@@ -128,7 +128,7 @@ class ModuleControllerTest extends TestCase
 	/**
 	 * @test
 	 */
-	function it_creates_key_and_triggers_download()
+	function it_triggers_module_download_and_dont_store_anythink_in_database_if_module_is_paied()
 	{
 		$moduleCode = 'test-download-module';
 		$domain = 'test-domain.com';
@@ -139,14 +139,33 @@ class ModuleControllerTest extends TestCase
 		);
 
 		$this->call('get', "/module/{$moduleCode}.zip");
-		$this->call('get', "/module/{$moduleCode}.zip");
+		$keyInfo = $this->keyRepository->byModuleAndDomain($moduleCode, $domain);
+		$allKeys = $this->keyRepository->all()->toArray();
+		
+		$this->assertCount(0, $allKeys);
+		$this->assertNull($keyInfo);
+		$this->assertResponseStatus(200);
+	}
+
+	/**
+	 * @test
+	 */
+	function it_triggers_module_download_and_stores_domain_to_module_relation_in_database_if_module_is_free()
+	{
+		$moduleCode = 'test-download-module';
+		$domain = 'example.com';
+
+		File::copy(
+			base_path("app/tests/resources/test-module.zip"),
+			base_path("public/modules/{$moduleCode}.zip")
+		);
+
 		$this->call('get', "/module/{$moduleCode}.zip");
 		$keyInfo = $this->keyRepository->byModuleAndDomain($moduleCode, $domain);
+		$allKeys = $this->keyRepository->all()->toArray();
 
-		print_r($this->keyRepository->all()->toArray());
-
-		$this->assertEquals($domain, $keyInfo->domain);
-		$this->assertEquals($moduleCode, $keyInfo->module_code);
+		$this->assertCount(1, $allKeys);
+		$this->assertNotNull($keyInfo);
 		$this->assertResponseStatus(200);
 	}
 	

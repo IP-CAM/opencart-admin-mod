@@ -25,7 +25,7 @@ class ModulesTableSeeder extends Seeder {
 		foreach(range(1, 10) as $index)
 		{
 			Blocks\Models\Module::create([
-				'code' => $faker->word,
+				'code' => $faker->unique->word,
 				'version' => '0.0.1',
 				'price' => $faker->numberBetween(10, 100),
 				'downloads' => $faker->numberBetween(1, 50),

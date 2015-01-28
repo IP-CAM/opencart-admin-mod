@@ -13,6 +13,16 @@ class Module extends Model
 	}
 
 	/**
+	 * Check if module is free or not
+	 *
+	 * @return mixed
+	 */
+	public function scopeIsFree($q)
+	{
+		return $q->where('price', '0')->first();
+	}
+
+	/**
 	 * Find module by code
 	 *
 	 * @return mixed

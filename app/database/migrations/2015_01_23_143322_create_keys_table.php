@@ -18,7 +18,7 @@ class CreateKeysTable extends Migration {
 			$table->string('module_code', 255);
 			$table->foreign('module_code')->references('code')->on('modules')->onDelete('restrict');
 			$table->string('domain');
-			$table->string('code')->unique();
+			$table->string('code')->unique()->nullable();
 			$table->date('expired_at')->nullable()->default(NULL);
 			$table->timestamps();
 		});

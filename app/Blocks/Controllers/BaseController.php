@@ -2,6 +2,7 @@
 
 use Illuminate\Routing\Controller;
 use View;
+use Input;
 
 class BaseController extends Controller
 {
