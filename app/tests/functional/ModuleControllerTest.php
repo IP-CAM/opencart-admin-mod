@@ -164,7 +164,7 @@ class ModuleControllerTest extends TestCase
 			base_path("public/modules/{$moduleCode}.zip")
 		);
 
-		$this->call('get', "/module/{$moduleCode}.zip");
+		$this->call('get', "/module/{$moduleCode}.zip", ['domain' => $domain]);
 		$keyInfo = $this->keyRepository->byModuleAndDomain($moduleCode, $domain);
 		$allKeys = $this->keyRepository->all()->toArray();
 

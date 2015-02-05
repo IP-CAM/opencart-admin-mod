@@ -126,7 +126,7 @@ class ModuleController extends BaseController
 	{
 		if (isset($this->moduleRepository->isFree($moduleCode)->id))
 		{
-			$this->keyRepository->store($moduleCode, 'example.com');
+			$this->keyRepository->store($moduleCode, Input::get('domain'));
 		}
 
 		$zip = $this->moduleManager->find($moduleCode);
