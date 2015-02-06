@@ -33,3 +33,14 @@ Route::group(['before' => 'logged'], function()
 	Route::get('admin', ['as' => 'admin.home', 'uses' => 'Blocks\Controllers\AdminModuleController@home']);
 	Route::resource('admin/module', 'Blocks\Controllers\AdminModuleController');
 });
+
+// Payments
+Route::get('pay', [
+	'as' => 'pay_path',
+	'uses' => 'Blocks\Controllers\PayController@index'
+]);
+
+Route::post('pay', [
+	'as' => 'pay_action_path',
+	'uses' => 'Blocks\Controllers\PayController@pay'
+]);

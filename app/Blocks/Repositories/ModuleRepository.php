@@ -4,6 +4,8 @@ use Blocks\Models\Module;
 use Blocks\Models\ModuleLanguage;
 use Blocks\Models\Language;
 use Blocks\Helpers\ModuleJson;
+use Illuminate\Filesystem\Filesystem;
+use Symfony\Component\Finder\Finder;
 
 class ModuleRepository
 {
@@ -11,12 +13,14 @@ class ModuleRepository
 	protected $module;
 	protected $moduleLanguage;
 	protected $language;
+	protected $file;
 
-	public function __construct(Module $module, ModuleLanguage $moduleLanguage, Language $language)
+	public function __construct(Module $module, ModuleLanguage $moduleLanguage, Language $language, Filesystem $file)
 	{
 		$this->module = $module;
 		$this->moduleLanguage = $moduleLanguage;
 		$this->language = $language;
+		$this->file = $file;
 	}
 
 	/**
@@ -24,7 +28,7 @@ class ModuleRepository
 	 *
 	 * @return mixed
 	 */
-	public function find($moduleCode, $language_code)
+	public function find($moduleCode, $language_code = 'en')
 	{
 		return $this
 			->module
@@ -64,12 +68,30 @@ class ModuleRepository
 	 *
 	 * @return mixed
 	 */
-	public function published($language_code)
+	public function published($language_code = 'en')
 	{
 		return [
 			'language_code' => $language_code,
 			'modules' => $this->module->published($language_code)->get()
 		];
+	}
+
+	/**
+	 * Get all published modules converted for <select>
+	 *
+	 * @return array
+	 */
+	public function publishedForSelect($language_code = 'en')
+	{
+		$result = [];
+		$modules = $this->published()['modules'];
+
+		foreach ($modules as $module)
+		{
+			$result[$module->code] = $module->information->first()->title;
+		}
+
+		return $result;
 	}
 
 	/**
@@ -140,6 +162,48 @@ class ModuleRepository
 		}, $languages, array_keys($languages));
 
 		$this->module->find($moduleId)->information()->saveMany($data);
+	}
+
+	/**
+	 * Save module images
+	 *
+	 * @return void
+	 */
+	public function saveImages($moduleCode, $images)
+	{
+		if (empty($images)) return false;
+
+		foreach ($images as $image)
+		{
+			if (empty($image)) continue;
+
+			$image->move(
+				base_path("public/resources/{$moduleCode}"), 
+				$image->getClientOriginalName()
+			);
+		}
+	}
+
+	/**
+	 * Get module images
+	 *
+	 * @return array
+	 */
+	public function getImages($moduleCode)
+	{
+		if ( ! file_exists($path = base_path("public/resources/{$moduleCode}")))
+		{
+			return [];
+		}
+
+		$images = Finder::create()->in($path)->files();
+
+		foreach ($images as $image)
+		{
+			$result[] = $image->getPathname();
+		}
+
+		return $result;
 	}
 
 }

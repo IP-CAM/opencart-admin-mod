@@ -1,4 +1,4 @@
-{{ Form::open(['route' => ['admin.module.update', $module->code], 'method' => 'put']) }}
+{{ Form::open(['route' => ['admin.module.update', $module->code], 'method' => 'put', 'files' => true]) }}
 	
 	<h1>
 		{{ $avalibleLanguages['en']->title }}
@@ -13,12 +13,15 @@
 	<hr>
 
 	{{ Form::label('price', 'Price') }}
-	{{ Form::input('price', Input::old('price', $module->price)) }}
+	{{ Form::text('price', Input::old('price', $module->price)) }}
 
 	{{ Form::label('version', 'Version') }}
-	{{ Form::input('version', Input::old('version', $module->version)) }}
+	{{ Form::text('version', Input::old('version', $module->version)) }}
 
-	<label>Status: {{ Form::checkbox('status', Input::old('status', $module->status)) }}</label>
+	{{ Form::label('images', 'Images') }}
+	{{ Form::file('images[]', ['multiple' => true]) }}
+
+	<label>Status: {{ Form::checkbox('status', 'Y', Input::old('status', $module->status)) }}</label>
 
 	<hr>
 

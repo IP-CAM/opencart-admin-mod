@@ -48,9 +48,11 @@ class AdminModuleController extends BaseController
 		$module = $this->moduleRepository->find($moduleCode, 'en');
 		$avalibleLanguages = $this->moduleRepository->getAvalibleLanguages($module->id);
 		$zip = $this->moduleManager->find($moduleCode);
+		$images = $this->moduleRepository->getImages($moduleCode);
 		
 		$this->layout->content = View::make('admin.module.edit')
 			->with('module', $module)
+			->with('images', $images)
 			->with('zip', $zip)
 			->with('avalibleLanguages', $avalibleLanguages);
 	}
@@ -68,7 +70,9 @@ class AdminModuleController extends BaseController
 			'version' => Input::get('version'),
 			'status' => Input::get('status')
 		]);
+
 		$this->moduleRepository->saveLanguages($moduleCode, Input::get('languages'));
+		$this->moduleRepository->saveImages($moduleCode, Input::file('images'));
 
 		return Redirect::route('admin.module.index');
 	}
