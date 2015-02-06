@@ -29,7 +29,7 @@ class Module extends Model
 	 */
 	public function scopeGetIdByCode($q, $moduleCode)
 	{
-		return $q->where('code', $moduleCode)->first()->pluck('id');
+		return $q->where('code', $moduleCode)->first()->id;
 	}
 
 	/**
