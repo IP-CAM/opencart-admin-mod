@@ -185,6 +185,19 @@ class ModuleRepository
 	}
 
 	/**
+	 * Will remove module images by their path
+	 *
+	 * @return void
+	 */
+	public function removeImages($moduleCode, $imagesToBeRemoved)
+	{
+		foreach ($imagesToBeRemoved as $image)
+		{
+			$this->file->delete(base_path($image));
+		}
+	}
+
+	/**
 	 * Get module images
 	 *
 	 * @return array
@@ -196,11 +209,12 @@ class ModuleRepository
 			return [];
 		}
 
+		$result = [];
 		$images = Finder::create()->in($path)->files();
 
 		foreach ($images as $image)
 		{
-			$result[] = $image->getPathname();
+			$result[] = "/public/resources/{$moduleCode}/{$image->getRelativePathname()}";
 		}
 
 		return $result;

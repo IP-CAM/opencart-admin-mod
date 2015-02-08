@@ -52,25 +52,7 @@ class AdminModuleControllerTest extends TestCase
 	 */
 	public function it_stores_module_info_with_multilang()
 	{
-		$input = [
-			'languages' => [
-				'en' => [
-					'title' => 'title eng',
-					'description' => 'Laudantium quisquam laudantium assumenda delectus voluptatem nam voluptatem totam sit pariatur culpa explicabo quia.',
-				],
-				'ru' => [
-					'title' => 'title rus',
-					'description' => 'Sit reprehenderit commodi distinctio deleniti quod molestiae quia quia qui beatae nemo quisquam culpa.',
-				],
-				'ua' => [
-					'title' => 'Title ukr',
-					'description' => 'Qui quia nobis sint odit quidem labore quia necessitatibus minus odio facilis animi aut voluptatem debitis.',
-				],
-			],
-			'price' => 999,
-			'version' => '2.0.0',
-			'status' => 1
-		];
+		$input = $this->getModuleDummyData();
 		
 		$moduleCode = $this->getFirstModule()->code;
 		$moduleId = $this->getFirstModule()->id;
@@ -93,25 +75,7 @@ class AdminModuleControllerTest extends TestCase
 	 */
 	public function it_stores_module_images()
 	{
-		$input = [
-			'languages' => [
-				'en' => [
-					'title' => 'title eng',
-					'description' => 'Laudantium quisquam laudantium assumenda delectus voluptatem nam voluptatem totam sit pariatur culpa explicabo quia.',
-				],
-				'ru' => [
-					'title' => 'title rus',
-					'description' => 'Sit reprehenderit commodi distinctio deleniti quod molestiae quia quia qui beatae nemo quisquam culpa.',
-				],
-				'ua' => [
-					'title' => 'Title ukr',
-					'description' => 'Qui quia nobis sint odit quidem labore quia necessitatibus minus odio facilis animi aut voluptatem debitis.',
-				],
-			],
-			'price' => 999,
-			'version' => '2.0.0',
-			'status' => 1
-		];
+		$input = $this->getModuleDummyData();
 
 		File::copy(app_path('tests/resources/images/dummy.png'), app_path('tests/resources/images/1.png'));
 		File::copy(app_path('tests/resources/images/dummy.png'), app_path('tests/resources/images/2.png'));
@@ -130,6 +94,37 @@ class AdminModuleControllerTest extends TestCase
 
 		$this->assertFileExists(base_path("public/resources/{$moduleCode}/1.png"));
 		$this->assertFileExists(base_path("public/resources/{$moduleCode}/2.png"));
+		$this->assertFileExists(base_path("public/resources/{$moduleCode}/3.png"));
+
+		File::deleteDirectory(base_path("public/resources/{$moduleCode}"));
+	}
+
+	/**
+	 * @test
+	 */
+	public function it_removes_module_images()
+	{
+		$input = $this->getModuleDummyData();
+		$moduleCode = $this->getFirstModule()->code;
+		$moduleId = $this->getFirstModule()->id;
+
+		File::makeDirectory(base_path("public/resources/{$moduleCode}"));
+		File::copy(app_path('tests/resources/images/dummy.png'), base_path("public/resources/{$moduleCode}/1.png"));
+		File::copy(app_path('tests/resources/images/dummy.png'), base_path("public/resources/{$moduleCode}/2.png"));
+		File::copy(app_path('tests/resources/images/dummy.png'), base_path("public/resources/{$moduleCode}/3.png"));
+		
+		// Create removable images
+		$input['remove_image'] = [
+			"public/resources/{$moduleCode}/1.png",
+			"public/resources/{$moduleCode}/2.png",
+		];
+
+		// Act
+		$this->call('put', "admin/module/{$moduleCode}", $input);
+		
+		// Assert
+		$this->assertFileNotExists(base_path("public/resources/{$moduleCode}/1.png"));
+		$this->assertFileNotExists(base_path("public/resources/{$moduleCode}/2.png"));
 		$this->assertFileExists(base_path("public/resources/{$moduleCode}/3.png"));
 
 		File::deleteDirectory(base_path("public/resources/{$moduleCode}"));
@@ -164,6 +159,34 @@ class AdminModuleControllerTest extends TestCase
 	protected function getFirstModule()
 	{
 		return Module::first();
+	}
+
+	/**
+	 * Here we will simply generate dummy module info(data)
+	 *
+	 * @return array
+	 */
+	protected function getModuleDummyData()
+	{
+		return [
+			'languages' => [
+				'en' => [
+					'title' => 'title eng',
+					'description' => 'Laudantium quisquam laudantium assumenda delectus voluptatem nam voluptatem totam sit pariatur culpa explicabo quia.',
+				],
+				'ru' => [
+					'title' => 'title rus',
+					'description' => 'Sit reprehenderit commodi distinctio deleniti quod molestiae quia quia qui beatae nemo quisquam culpa.',
+				],
+				'ua' => [
+					'title' => 'Title ukr',
+					'description' => 'Qui quia nobis sint odit quidem labore quia necessitatibus minus odio facilis animi aut voluptatem debitis.',
+				],
+			],
+			'price' => 999,
+			'version' => '2.0.0',
+			'status' => 1
+		];
 	}
 	
 }

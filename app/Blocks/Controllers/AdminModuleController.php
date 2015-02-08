@@ -70,8 +70,9 @@ class AdminModuleController extends BaseController
 			'version' => Input::get('version'),
 			'status' => Input::get('status')
 		]);
-
+		
 		$this->moduleRepository->saveLanguages($moduleCode, Input::get('languages'));
+		$this->moduleRepository->removeImages($moduleCode, Input::get('remove_image', []));
 		$this->moduleRepository->saveImages($moduleCode, Input::file('images'));
 
 		return Redirect::route('admin.module.index');
