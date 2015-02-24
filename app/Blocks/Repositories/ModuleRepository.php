@@ -70,9 +70,17 @@ class ModuleRepository
 	 */
 	public function published($language_code = 'en')
 	{
+		$modules = $this->module->published($language_code)->get();
+
+		// Fetch modules images
+		foreach ($modules as $key => $module)
+		{
+			$modules[$key]->images = $this->getImages($module->code);
+		}
+
 		return [
 			'language_code' => $language_code,
-			'modules' => $this->module->published($language_code)->get()
+			'modules' => $modules
 		];
 	}
 
@@ -173,13 +181,14 @@ class ModuleRepository
 	{
 		if (empty($images)) return false;
 
+		$lastImageId = 1;
 		foreach ($images as $image)
 		{
 			if (empty($image)) continue;
 
 			$image->move(
 				base_path("public/resources/{$moduleCode}"), 
-				$image->getClientOriginalName()
+				$lastImageId++
 			);
 		}
 	}

@@ -77,14 +77,14 @@ class AdminModuleControllerTest extends TestCase
 	{
 		$input = $this->getModuleDummyData();
 
-		File::copy(app_path('tests/resources/images/dummy.png'), app_path('tests/resources/images/1.png'));
-		File::copy(app_path('tests/resources/images/dummy.png'), app_path('tests/resources/images/2.png'));
-		File::copy(app_path('tests/resources/images/dummy.png'), app_path('tests/resources/images/3.png'));
+		File::copy(app_path('tests/resources/images/dummy.png'), app_path('tests/resources/images/random-uiohsakf.png'));
+		File::copy(app_path('tests/resources/images/dummy.png'), app_path('tests/resources/images/random-82713d.png'));
+		File::copy(app_path('tests/resources/images/dummy.png'), app_path('tests/resources/images/random-k0962kl.png'));
 
 		$images = [
-			new UploadedFile(app_path('tests/resources/images/1.png'), '1.png'),
-			new UploadedFile(app_path('tests/resources/images/2.png'), '2.png'),
-			new UploadedFile(app_path('tests/resources/images/3.png'), '3.png'),
+			new UploadedFile(app_path('tests/resources/images/random-uiohsakf.png'), 'random-uiohsakf.png'),
+			new UploadedFile(app_path('tests/resources/images/random-82713d.png'), 'random-82713d.png'),
+			new UploadedFile(app_path('tests/resources/images/random-k0962kl.png'), 'random-k0962kl.png'),
 		];
 
 		$moduleCode = $this->getFirstModule()->code;
