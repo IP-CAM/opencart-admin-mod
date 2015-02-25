@@ -6,6 +6,7 @@ use Blocks\Models\Language;
 use Blocks\Helpers\ModuleJson;
 use Illuminate\Filesystem\Filesystem;
 use Symfony\Component\Finder\Finder;
+use Intervention\Image\ImageManager;
 
 class ModuleRepository
 {
@@ -30,8 +31,7 @@ class ModuleRepository
 	 */
 	public function find($moduleCode, $language_code = 'en')
 	{
-		return $this
-			->module
+		return $this->module
 			->withLanguages($language_code)
 			->whereCode($moduleCode)->first();
 	}
@@ -71,12 +71,6 @@ class ModuleRepository
 	public function published($language_code = 'en')
 	{
 		$modules = $this->module->published($language_code)->get();
-
-		// Fetch modules images
-		foreach ($modules as $key => $module)
-		{
-			$modules[$key]->images = $this->getImages($module->code);
-		}
 
 		return [
 			'language_code' => $language_code,
@@ -179,6 +173,9 @@ class ModuleRepository
 	 */
 	public function saveImages($moduleCode, $images)
 	{
+		$manager = new ImageManager(array('driver' => 'GD'));
+
+		@mkdir(base_path("public/resources/{$moduleCode}"));
 		if (empty($images)) return false;
 
 		$lastImageId = 1;
@@ -186,11 +183,27 @@ class ModuleRepository
 		{
 			if (empty($image)) continue;
 
-			$image->move(
-				base_path("public/resources/{$moduleCode}"), 
-				$lastImageId++
-			);
+			$newImage = $lastImageId++ . '.png';
+
+			$manager
+				->make($image->getPathname())
+				->resize(500, null, function ($constraint) {
+					$constraint->aspectRatio();
+				})
+				->save(base_path("public/resources/{$moduleCode}/{$newImage}"));
 		}
+	}
+
+	/**
+	 * Set module logo image
+	 *
+	 * @return void
+	 */
+	public function setLogo($moduleCode, $logo)
+	{
+		if (empty($logo) OR ! file_exists(base_path($logo))) return false;
+
+		$this->module->setLogo($moduleCode, $logo);
 	}
 
 	/**
@@ -223,10 +236,22 @@ class ModuleRepository
 
 		foreach ($images as $image)
 		{
-			$result[] = "/public/resources/{$moduleCode}/{$image->getRelativePathname()}";
+			$result[] = $this->getImagePath($moduleCode, $image->getRelativePathname());
 		}
 
 		return $result;
+	}
+
+	/**
+	 * Get image path
+	 *
+	 * @return string
+	 */
+	protected function getImagePath($moduleCode, $image)
+	{
+		$host = isset($_SERVER['HTTP_HOST']) ? 'http://' . $_SERVER['HTTP_HOST'] : '';
+
+		return $host . "/public/resources/{$moduleCode}/{$image}";
 	}
 
 }

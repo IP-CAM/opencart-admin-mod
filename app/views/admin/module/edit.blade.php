@@ -1,3 +1,7 @@
+@if (Session::has('successMessage'))
+	<div class="alert green">{{ Session::get('successMessage') }}</div>
+@endif
+
 {{ Form::open(['route' => ['admin.module.update', $module->code], 'method' => 'put', 'files' => true]) }}
 	
 	<h1>
@@ -20,12 +24,12 @@
 
 	{{ Form::label('images', 'Images') }}
 	{{ Form::file('images[]', ['multiple' => true]) }}
-
 	<div class="module-images">
 		@forelse ($images as $image)
 			<a href="{{ $image }}" target="_blank">
 				{{ HTML::image($image) }}
 				{{ Form::checkbox('remove_image[]', $image) }}
+				{{ Form::radio('is_logo', $image, $image == $module->logo) }}
 			</a>
 		@empty
 			<strong>There are not images.</strong>
@@ -68,7 +72,12 @@
 	}
 	.module-images input {
 		position: absolute;
-		right: 10px;
 		top: 10px;
+	}
+	.module-images input[type=checkbox] {
+		right: 10px;
+	}
+	.module-images input[type=radio] {
+		right: 30px;
 	}
 </style>

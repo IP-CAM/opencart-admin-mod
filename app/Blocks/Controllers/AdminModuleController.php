@@ -74,8 +74,10 @@ class AdminModuleController extends BaseController
 		$this->moduleRepository->saveLanguages($moduleCode, Input::get('languages'));
 		$this->moduleRepository->removeImages($moduleCode, Input::get('remove_image', []));
 		$this->moduleRepository->saveImages($moduleCode, Input::file('images'));
+		$this->moduleRepository->setLogo($moduleCode, Input::get('is_logo'));
 
-		return Redirect::route('admin.module.index');
+		return Redirect::route('admin.module.edit', $moduleCode)
+			->with('successMessage', 'Saved!');
 	}
 
 	/**

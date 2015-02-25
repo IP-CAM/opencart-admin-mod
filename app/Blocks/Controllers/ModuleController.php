@@ -90,8 +90,12 @@ class ModuleController extends BaseController
 	public function find_json($moduleCode)
 	{
 		$module = $this->moduleRepository->find($moduleCode, Input::get('language_code', 'en'));
+
+		// Get module images
+		$module->images = $this->moduleRepository->getImages($moduleCode);
+
+		// Get module zip file
 		$module->zip = NULL;
-		
 		if ($this->moduleManager->find($moduleCode))
 		{
 			$module->zip = URL::route('module_download_path', $moduleCode);

@@ -131,6 +131,35 @@ class AdminModuleControllerTest extends TestCase
 	}
 
 	/**
+	 * @test
+	 */
+	public function it_changes_module_logo()
+	{
+		$input = $this->getModuleDummyData();
+		$moduleCode = $this->getFirstModule()->code;
+		$moduleId = $this->getFirstModule()->id;
+
+		File::makeDirectory(base_path("public/resources/{$moduleCode}"));
+		File::copy(app_path('tests/resources/images/dummy.png'), base_path("public/resources/{$moduleCode}/1.png"));
+		File::copy(app_path('tests/resources/images/dummy.png'), base_path("public/resources/{$moduleCode}/2.png"));
+		File::copy(app_path('tests/resources/images/dummy.png'), base_path("public/resources/{$moduleCode}/3.png"));
+		
+		// Set module logo image
+		$input['is_logo'] = "public/resources/{$moduleCode}/2.png";
+
+		// Act
+		$this->call('put', "admin/module/{$moduleCode}", $input);
+
+		// Assert
+		$this->assertEquals(
+			$input['is_logo'],
+			Module::find($moduleId)->first()->logo
+		);
+
+		File::deleteDirectory(base_path("public/resources/{$moduleCode}"));
+	}
+
+	/**
 	 * Here we will generate module dummy images
 	 *
 	 * @return void

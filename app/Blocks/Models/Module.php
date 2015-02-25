@@ -56,5 +56,25 @@ class Module extends Model
 			->withLanguages($language_code)
 			->where('status', 1);
 	}
+
+	/**
+	 * Set module logo image
+	 *
+	 * @return mixed
+	 */
+	public function setLogo($moduleCode, $logo)
+	{
+		$module = $this->whereCode($moduleCode)->first();
+		$module->logo = $logo;
+
+		return $module->save();
+	}
+
+	public function getLogoAttribute($logo)
+	{
+		$host = isset($_SERVER['HTTP_HOST']) ? 'http://' . $_SERVER['HTTP_HOST'] : '';
+
+		return $host . $logo;
+	}
 	
 }

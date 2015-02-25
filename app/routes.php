@@ -16,7 +16,7 @@ Route::get('module/{code}.zip', [
 Route::get('module/version', 'Blocks\Controllers\ModuleController@version');
 Route::get('module/publish', 'Blocks\Controllers\ModuleController@publish_form');
 Route::post('module/publish', ['as' => 'module.publish', 'uses' => 'Blocks\Controllers\ModuleController@publish']);
-Route::resource('module', 'Blocks\Controllers\ModuleController');
+Route::get('module', 'Blocks\Controllers\ModuleController@index');
 
 // Validate keys
 Route::get('key/validate', 'Blocks\Controllers\KeyValidatorController@validate');
@@ -31,7 +31,9 @@ Route::group(['before' => 'logged'], function()
 {
 	Route::get('admin/logout', 'Blocks\Controllers\AdminModuleController@logout');
 	Route::get('admin', ['as' => 'admin.home', 'uses' => 'Blocks\Controllers\AdminModuleController@home']);
-	Route::resource('admin/module', 'Blocks\Controllers\AdminModuleController');
+	Route::resource('admin/module', 'Blocks\Controllers\AdminModuleController', [
+		'only' => ['index', 'edit', 'update']
+	]);
 });
 
 // Payments

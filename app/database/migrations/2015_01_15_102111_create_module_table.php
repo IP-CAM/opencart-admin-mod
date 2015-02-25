@@ -20,6 +20,7 @@ class CreateModuleTable extends Migration {
 			$table->integer('price')->default(0);
 			$table->integer('downloads')->default(0);
 			$table->integer('status')->default(0);
+			$table->string('logo')->nullable();
 			$table->timestamps();
 		});
 	}
