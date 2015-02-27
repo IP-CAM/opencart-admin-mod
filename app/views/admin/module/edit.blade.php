@@ -29,7 +29,7 @@
 			<a href="{{ $image }}" target="_blank">
 				{{ HTML::image($image) }}
 				{{ Form::checkbox('remove_image[]', $image) }}
-				{{ Form::radio('is_logo', $image, $image == $module->logo) }}
+				{{ Form::radio('is_logo', $image, $image == $module->originalLogo()) }}
 			</a>
 		@empty
 			<strong>There are not images.</strong>

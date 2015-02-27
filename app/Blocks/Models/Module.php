@@ -70,11 +70,16 @@ class Module extends Model
 		return $module->save();
 	}
 
+	public function originalLogo()
+	{
+		return $this->attributes['logo'];
+	}
+
 	public function getLogoAttribute($logo)
 	{
 		$host = isset($_SERVER['HTTP_HOST']) ? 'http://' . $_SERVER['HTTP_HOST'] : '';
 
-		return $host . $logo;
+		return "{$host}/{$logo}";
 	}
 	
 }

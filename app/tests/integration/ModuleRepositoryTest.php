@@ -13,6 +13,12 @@ class ModuleRepositoryTest extends TestCase
 		parent::setUp();
 
 		$this->repository = App::make('Blocks\Repositories\ModuleRepository');
+		$this->createDemoImagesForModule('dummy-module');
+	}
+
+	public function tearDown()
+	{
+		$this->removeDemoImagesForModule('dummy-module');
 	}
 	
 	/**
@@ -133,6 +139,40 @@ class ModuleRepositoryTest extends TestCase
 		$this->assertArrayHasKey('en', $result);
 		$this->assertArrayHasKey('ru', $result);
 		$this->assertArrayHasKey('ua', $result);
+	}
+
+	/**
+	 * @test
+	 */
+	public function it_grabs_all_module_images()
+	{
+		$images = $this->repository->getImages('dummy-module');
+		$expected = [
+			"public/resources/dummy-module/1.png",
+			"public/resources/dummy-module/2.png",
+			"public/resources/dummy-module/3.png",
+		];
+
+		$this->assertEquals($expected, $images);
+	}
+
+
+
+	/**
+	 * HELPERS
+	 */
+	private function createDemoImagesForModule($moduleCode)
+	{
+		@mkdir(base_path("public/resources/{$moduleCode}"), 0777);
+
+		File::copy(app_path('tests/resources/images/dummy.png'), base_path("public/resources/{$moduleCode}/1.png"));
+		File::copy(app_path('tests/resources/images/dummy.png'), base_path("public/resources/{$moduleCode}/2.png"));
+		File::copy(app_path('tests/resources/images/dummy.png'), base_path("public/resources/{$moduleCode}/3.png"));
+	}
+
+	private function removeDemoImagesForModule($moduleCode)
+	{
+		File::deleteDirectory(base_path("public/resources/{$moduleCode}"));
 	}
 	
 }

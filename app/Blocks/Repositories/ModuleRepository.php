@@ -183,7 +183,7 @@ class ModuleRepository
 		{
 			if (empty($image)) continue;
 
-			$newImage = $lastImageId++ . '.png';
+			$newImage = $this->generateImageName($moduleCode, $image->getClientOriginalExtension());
 
 			$manager
 				->make($image->getPathname())
@@ -192,6 +192,18 @@ class ModuleRepository
 				})
 				->save(base_path("public/resources/{$moduleCode}/{$newImage}"));
 		}
+	}
+
+	protected function generateImageName($moduleCode, $imageExtension)
+	{
+		$newImage = rand() * 1000;
+
+		if (file_exists(base_path("public/resources/{$moduleCode}/{$newImage}")))
+		{
+			return $this->generateImageName($moduleCode);
+		}
+		
+		return "{$newImage}.{$imageExtension}";
 	}
 
 	/**
@@ -249,9 +261,9 @@ class ModuleRepository
 	 */
 	protected function getImagePath($moduleCode, $image)
 	{
-		$host = isset($_SERVER['HTTP_HOST']) ? 'http://' . $_SERVER['HTTP_HOST'] : '';
+		// $host = isset($_SERVER['HTTP_HOST']) ? 'http://' . $_SERVER['HTTP_HOST'] : '';
 
-		return $host . "/public/resources/{$moduleCode}/{$image}";
+		return "public/resources/{$moduleCode}/{$image}";
 	}
 
 }
