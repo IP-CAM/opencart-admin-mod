@@ -66,7 +66,7 @@ class Module extends Model
 	{
 		$module = $this->whereCode($moduleCode)->first();
 		$module->logo = $logo;
-
+		
 		return $module->save();
 	}
 

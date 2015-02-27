@@ -153,8 +153,9 @@ class AdminModuleControllerTest extends TestCase
 		// Assert
 		$this->assertEquals(
 			$input['is_logo'],
-			Module::find($moduleId)->first()->logo
+			Module::find($moduleId)->originalLogo()
 		);
+
 
 		File::deleteDirectory(base_path("public/resources/{$moduleCode}"));
 	}
