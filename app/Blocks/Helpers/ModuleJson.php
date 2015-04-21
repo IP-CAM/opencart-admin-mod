@@ -102,6 +102,11 @@ class ModuleJson
         return $this->grab('version');
     }
 
+    public function getStatus()
+    {
+        return $this->grab('status');
+    }
+
     public function getTitle()
     {
         return $this->grab('title');

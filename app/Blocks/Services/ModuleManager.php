@@ -32,7 +32,8 @@ class ModuleManager
         // update module info in db
         $this->moduleRepository->save([
             'code' => $moduleInfo->getCode(), 
-            'version' => $moduleInfo->getVersion()
+            'version' => $moduleInfo->getVersion(),
+            'status' => $moduleInfo->getStatus()
         ]);
 
         return true;
