@@ -1,4 +1,6 @@
 <?php
+
+print_r($_SERVER); die();
 /**
  * Laravel - A PHP Framework For Web Artisans
  *
