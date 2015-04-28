@@ -109,7 +109,7 @@ class ModuleControllerTest extends TestCase
 		\Illuminate\Support\Facades\File::delete(base_path('public/modules/test-module.zip'));
 
 		// Given
-		$zip = app_path('tests/resources/test-module.zip'); 
+		$zip = app_path('tests/resources/test-module.zip');
 		
 		// When
 		$this->call('post', 'module/publish', ['secret' => 'testing-secret'], [
