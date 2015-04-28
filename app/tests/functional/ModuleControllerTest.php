@@ -120,7 +120,8 @@ class ModuleControllerTest extends TestCase
 		$this->assertFileExists(base_path('tmp/uploaded-module'));
 		$this->assertFileExists(base_path('public/modules/test-module.zip'));
 
-		$this->assertNotNull($this->moduleRepository->find('test-module', 'en'));
+		$this->moduleHasLanguages('test-module', ['ua', 'en', 'ru']);
+		$this->moduleHasCorrectStatus('test-module', 1);
 
 		$this->assertResponseStatus(200);
 	}
@@ -213,6 +214,39 @@ class ModuleControllerTest extends TestCase
 
 		$this->assertTrue($json->status);
 		$this->assertResponseStatus(200);
+	}
+
+	/**
+	 * Check if module has languages
+	 *
+	 * @return void
+	 */
+	protected function moduleHasLanguages($moduleCode, $languageCodes)
+	{
+		// Arrange
+		$moduleId = Module::getIdByCode($moduleCode);
+		$languages = $this->moduleRepository->getAvalibleLanguages($moduleId);
+
+		// Assert
+		$this->assertArrayHasKey('ua', $languages, 'I cant find UA language in module');
+		$this->assertArrayHasKey('ru', $languages, 'I cant find RU language in module');
+		$this->assertArrayHasKey('en', $languages, 'I cant find EN language in module');
+
+		$this->assertNotNull($languages['ua'], 'I cant find UA language in module');
+		$this->assertNotNull($languages['ru'], 'I cant find RU language in module');
+		$this->assertNotNull($languages['en'], 'I cant find EN language in module');
+	}
+
+	/**
+	 * Check if module has correct `status` in database
+	 *
+	 * @return void
+	 */
+	protected function moduleHasCorrectStatus($moduleCode, $status)
+	{
+		$moduleInfo = $this->moduleRepository->find($moduleCode, 'en');
+		
+		$this->assertEquals($status, $moduleInfo->status);
 	}
 	
 }

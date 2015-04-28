@@ -136,6 +136,7 @@ class ModuleRepository
 			return $module->save();
 		}
 
+		$this->module->status = empty($moduleInfo['status']) ? 0 : 1;
 		$this->module->code = $moduleInfo['code'];
 		$this->module->version = $moduleInfo['version'];
 		return $this->module->save();

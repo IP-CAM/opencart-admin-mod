@@ -3,6 +3,7 @@
 use Blocks\Helpers\ModuleZip;
 use Blocks\Helpers\ModuleJson;
 use Blocks\Repositories\ModuleRepository;
+use Blocks\Models\Language;
 
 class ModuleManager
 {
@@ -11,11 +12,17 @@ class ModuleManager
     protected $moduleJson;
 	protected $moduleRepository;
 
-	public function __construct(ModuleZip $moduleZip, ModuleJson $moduleJson, ModuleRepository $moduleRepository)
+	public function __construct(
+        ModuleZip $moduleZip, 
+        ModuleJson $moduleJson, 
+        ModuleRepository $moduleRepository, 
+        Language $language
+    )
 	{
 		$this->moduleZip = $moduleZip;
         $this->moduleJson = $moduleJson;
 		$this->moduleRepository = $moduleRepository;
+        $this->language = $language;
 	}
 
     public function store($zip)
@@ -36,6 +43,12 @@ class ModuleManager
             'status' => $moduleInfo->getStatus()
         ]);
 
+        // update module languages in db
+        $this->moduleRepository->saveLanguages(
+            $moduleInfo->getCode(),
+            $this->createDummyLanguages($moduleInfo)
+        );
+
         return true;
     }
 
@@ -51,6 +64,25 @@ class ModuleManager
         if ($path) return $path;
 
         return false;
+    }
+
+    /**
+     * Will create dummy languages data
+     *
+     * @return array
+     */
+    protected function createDummyLanguages($moduleInfo)
+    {
+        $result = [];
+        $languages = $this->language->lists('code');
+
+        foreach ($languages as $languageCode)
+        {
+            $result[$languageCode]['title'] = $moduleInfo->getTitle();
+            $result[$languageCode]['description'] = $moduleInfo->getDescription();
+        }
+
+        return $result;
     }
 
 }

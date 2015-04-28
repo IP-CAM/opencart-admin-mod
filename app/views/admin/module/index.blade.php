@@ -5,6 +5,7 @@
 				{{ HTML::image($module->logo, $module->information->first()->title, ['width' => 150]) }}
 			</figure>
 			Title: {{ $module->information->first()->title }}<br>
+
 			Version: {{ $module->version }}<br>
 			Price: {{ $module->price }}<br>
 			Status: {{ $module->status }}<br>
