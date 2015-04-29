@@ -5,6 +5,8 @@ use Blocks\Billing\Interkassa;
 use View;
 use Input;
 use Response;
+use File;
+
 
 class PayController extends BaseController
 {
@@ -30,11 +32,15 @@ class PayController extends BaseController
 
 	public function success()
 	{
+		File::put('/success-log.txt', json_encode(Input::all()));
+
 		return '+';
 	}
 
 	public function fail()
 	{
+		File::put('/fail-log.txt', json_encode(Input::all()));
+
 		return '-';
 	}
 
