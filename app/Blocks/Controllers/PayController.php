@@ -75,6 +75,8 @@ class PayController extends BaseController
 			}
 		}
 
+		File::put(base_path('/pay-process-log.txt'), json_encode(Input::all()));
+
 		return Response::json([]);
 	}
 
