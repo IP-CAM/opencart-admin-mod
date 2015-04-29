@@ -32,14 +32,14 @@ class PayController extends BaseController
 
 	public function success()
 	{
-		File::put('/success-log.txt', json_encode(Input::all()));
+		File::put(base_path('/success-log.txt'), json_encode(Input::all()));
 
 		return '+';
 	}
 
 	public function fail()
 	{
-		File::put('/fail-log.txt', json_encode(Input::all()));
+		File::put(base_path('/fail-log.txt'), json_encode(Input::all()));
 
 		return '-';
 	}
