@@ -58,24 +58,24 @@ class PayController extends BaseController
 	 */
 	public function pay()
 	{
-		// $moduleCode = Input::get('ik_x_module_code');
-		// $domain = Input::get('ik_x_domain');
-		// $price = Input::get('ik_am');
+		$moduleCode = Input::get('ik_x_module_code');
+		$domain = Input::get('ik_x_domain');
+		$price = Input::get('ik_am');
 
-		// // Check if kassa is OK
-		// if ($this->interkassa->validate(Input::all()))
-		// {
-		// 	// Get module info in order to check 
-		// 	// payed price with actual module price
-		// 	$module = $this->moduleRepository->find($moduleCode);
+		// Check if kassa is OK
+		if ($this->interkassa->validate(Input::all()))
+		{
+			// Get module info in order to check 
+			// payed price with actual module price
+			$module = $this->moduleRepository->find($moduleCode);
 
-		// 	if ( ! empty($module) AND $module->price == $price)
-		// 	{
-		// 		$this->keyRepository->store($moduleCode, $domain);
-		// 	}
-		// }
+			if ( ! empty($module) AND $module->price == $price)
+			{
+				$this->keyRepository->store($moduleCode, $domain);
+			}
+		}
 
-		File::put(base_path('/pay-process-log.txt'), json_encode(Input::all()));
+		return Response::json([]);
 	}
 
 }

@@ -31,9 +31,9 @@ class Interkassa
 
 		// Validate kassa results
 		if(
-			$ik_co_id == '5370b5c3bf4efcad22ad7007' AND 
-			$ik_inv_st == 'success' AND 
-			$ik_sign == $sign
+			$ik_co_id === '5370b5c3bf4efcad22ad7007' AND 
+			$ik_inv_st === 'success' AND 
+			$ik_sign === $sign
 		)
 		{
 			return $ik_am;

@@ -40,19 +40,24 @@ class PayControllerTest extends TestCase
 	 */
 	public function it_vaildates_if_payment_was_good_and_create_new_module_to_domain_relation()
 	{
+		// Arrange
 		$response = $this->getSuccessPaymentResponse();
 		$moduleCode = $response['ik_x_module_code'];
 		$domain = $response['ik_x_domain'];
-		
-		$this->call('post', 'pay', $response);
-		$key = $this->keyRepository->byModuleAndDomain($moduleCode, $domain);
 
-		$this->assertNotNull($key);
-		$this->assertResponseStatus(200);
+		$this->updateModulePrice($moduleCode, 100);
+		$this->clearKeys();
+		
+		// Act
+		$this->call('post', 'pay', $response);
+
+		// Assert
+		$this->checkIfKeyExists($moduleCode, $domain);
+		$this->assertResponseOk();
 	}
 
 	/**
-	 * Will return success response for payment.
+	 * Will return success response for payment (Interkassa).
 	 * 
 	 * Module code: test-download-module
 	 * Price: 100$
@@ -63,10 +68,12 @@ class PayControllerTest extends TestCase
 	{
 		return [
 			"ik_co_id" => "5370b5c3bf4efcad22ad7007",
-			"ik_inv_id" => "36067922",
+			"ik_co_prs_id" => "202319528046",
+			"ik_inv_id" => "36068527",
 			"ik_inv_st" => "success",
-			"ik_inv_crt" => "2015-04-29 11:17:22",
-			"ik_inv_prc" => "2015-04-29 11:17:22",
+			"ik_inv_crt" => "2015-04-29 11:44:37",
+			"ik_inv_prc" => "2015-04-29 11:44:37",
+			"ik_trn_id" => "",
 			"ik_pm_no" => "ID_4233",
 			"ik_pw_via" => "test_interkassa_test_xts",
 			"ik_am" => "100.00",
@@ -75,8 +82,30 @@ class PayControllerTest extends TestCase
 			"ik_cur" => "USD",
 			"ik_desc" => "Event Description",
 			"ik_x_module_code" => "test-download-module",
-			"ik_x_domain" => "modules.dev"
+			"ik_x_domain" => "modules.dev",
+			"ik_sign" => "IhQUsgju7Yn/tgVIQDQKgw=="
 		];
+	}
+
+	protected function updateModulePrice($moduleCode, $price = 0)
+	{
+		$this->moduleRepository->find($moduleCode)->update([
+			'price' => $price
+		]);
+	}
+
+	protected function clearKeys()
+	{
+		DB::table('keys')->truncate();
+	}
+
+	protected function checkIfKeyExists($moduleCode, $domain)
+	{
+		$key = $this->keyRepository->byModuleAndDomain($moduleCode, $domain);
+
+		$this->assertNotNull($key);
+		$this->assertEquals($key->module_code, $moduleCode);
+		$this->assertEquals($key->domain, $domain);
 	}
 
 	
