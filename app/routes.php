@@ -46,3 +46,13 @@ Route::post('pay', [
 	'as' => 'pay_action_path',
 	'uses' => 'Blocks\Controllers\PayController@pay'
 ]);
+
+Route::get('pay/success', [
+	'as' => 'success_pay_path',
+	'uses' => 'Blocks\Controllers\PayController@success'
+]);
+
+Route::get('pay/fail', [
+	'as' => 'fail_pay_path',
+	'uses' => 'Blocks\Controllers\PayController@fail'
+]);

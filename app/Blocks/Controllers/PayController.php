@@ -25,16 +25,17 @@ class PayController extends BaseController
 	 */
 	public function index()
 	{
-		$moduleCode = Input::get('module');
-		$domain = Input::get('domain', '');
+		return 'hello with pay method';
+	}
 
-		$module = $this->moduleRepository->find($moduleCode, 'en');
-		$list = $this->moduleRepository->publishedForSelect();
+	public function success()
+	{
+		return '+';
+	}
 
-		$this->layout->content = View::make('pay.index')
-			->with('modules', $list)
-			->with('module', $module)
-			->with('domain', $domain);
+	public function fail()
+	{
+		return '-';
 	}
 
 	/**

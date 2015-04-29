@@ -21,7 +21,7 @@ class Interkassa
 		ksort($key_to_sort, SORT_STRING);
 
 		// Add to the array "secret key"
-		array_push($key_to_sort, 'hyfpD2E9J6mN65Ew');
+		array_push($key_to_sort, 'GgVZKZlP8cRJBwh3');
 
 		// Concatenate values ​​by a ":"
 		$signString = implode(':', $key_to_sort);
@@ -31,7 +31,7 @@ class Interkassa
 
 		// Validate kassa results
 		if(
-			$ik_co_id == '54d38c70bf4efcad3252c4df' AND 
+			$ik_co_id == '5370b5c3bf4efcad22ad7007' AND 
 			$ik_inv_st == 'success' AND 
 			$ik_sign == $sign
 		)
