@@ -1,0 +1,1 @@
+["interkassa::validate is ok","module price is100","target price is100.00","key repo should store all the stuff"]
