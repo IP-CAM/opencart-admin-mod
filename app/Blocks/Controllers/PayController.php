@@ -1,6 +1,7 @@
 <?php namespace Blocks\Controllers;
 
 use Blocks\Repositories\ModuleRepository;
+use Blocks\Repositories\KeyRepository;
 use Blocks\Billing\Interkassa;
 use View;
 use Input;
@@ -12,12 +13,18 @@ class PayController extends BaseController
 {
 
 	protected $moduleRepository;
+	protected $keyRepository;
 	protected $interkassa;
 
-	public function __construct(ModuleRepository $moduleRepository, Interkassa $interkassa)
+	public function __construct(
+		ModuleRepository $moduleRepository, 
+		Interkassa $interkassa, 
+		KeyRepository $keyRepository
+	)
 	{
 		$this->moduleRepository = $moduleRepository;
 		$this->interkassa = $interkassa;
+		$this->keyRepository = $keyRepository;
 	}
 	
 	/**
@@ -51,9 +58,24 @@ class PayController extends BaseController
 	 */
 	public function pay()
 	{
-		$this->interkassa->validate(Input::all());
+		// $moduleCode = Input::get('ik_x_module_code');
+		// $domain = Input::get('ik_x_domain');
+		// $price = Input::get('ik_am');
 
-		return Response::json([]);
+		// // Check if kassa is OK
+		// if ($this->interkassa->validate(Input::all()))
+		// {
+		// 	// Get module info in order to check 
+		// 	// payed price with actual module price
+		// 	$module = $this->moduleRepository->find($moduleCode);
+
+		// 	if ( ! empty($module) AND $module->price == $price)
+		// 	{
+		// 		$this->keyRepository->store($moduleCode, $domain);
+		// 	}
+		// }
+
+		File::put(base_path('/pay-process-log.txt'), json_encode(Input::all()));
 	}
 
 }
